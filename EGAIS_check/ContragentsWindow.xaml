@@ -1,0 +1,40 @@
+﻿<Window x:Class="AlcoBear.ContragentsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Контрагенты" Height="285" Width="665" MinWidth="665" MinHeight="285" WindowStartupLocation="CenterOwner">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="55"/>
+            <RowDefinition Height="122*"/>
+        </Grid.RowDefinitions>
+        <GroupBox Header="Запрос данных контрагента" Margin="0" Grid.Row="0">
+            <Grid>
+                <TextBox x:Name="tbQueryOrgRegID" HorizontalAlignment="Left" Height="23" Margin="60,5,0,0" VerticalAlignment="Top" Width="235" TabIndex="1" VerticalScrollBarVisibility="Disabled" ToolTip="ClientRegID (FSRAR ID) контрагента" MaxLines="1" MaxLength="50"/>
+                <TextBox x:Name="tbQueryOrgINN" HorizontalAlignment="Left" Height="23" Margin="356,5,0,0" VerticalAlignment="Top" Width="244" TabIndex="2" VerticalScrollBarVisibility="Disabled" ToolTip="ИНН контрагента" IsUndoEnabled="False" MaxLines="1" MaxLength="12" IsReadOnly="False"/>
+                <Button x:Name="btContragentsListAdd" HorizontalAlignment="Left" VerticalAlignment="Top" Background="{x:Null}" BorderThickness="0" Height="30" Width="30" UseLayoutRounding="True" MaxWidth="30" MaxHeight="30" MinHeight="25" MinWidth="25" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" BorderBrush="{x:Null}" Click="btContragentsListAdd_Click" Foreground="{x:Null}" ToolTip="Контрагенты" Margin="605,0,0,0">
+                    <Image Source="Resources/imgAdd.png" Height="Auto" Stretch="Fill" Width="Auto" HorizontalAlignment="Stretch"/>
+                </Button>
+                <TextBlock HorizontalAlignment="Left" Margin="5,7,0,0" TextWrapping="Wrap" Text="FSRAR ID" VerticalAlignment="Top" RenderTransformOrigin="-6.42,0.689" FontStyle="Italic"/>
+                <TextBlock HorizontalAlignment="Left" Margin="325,7,0,0" TextWrapping="Wrap" Text="ИНН" VerticalAlignment="Top" FontStyle="Italic"/>
+            </Grid>
+        </GroupBox>
+        <GroupBox x:Name="gbLoadedContragents" Header="Загруженные контрагенты" Margin="0" Grid.Row="1" IsEnabled="True">
+            <Grid>
+                <Button x:Name="btContragentsListRefresh" HorizontalAlignment="Left" VerticalAlignment="Top" Background="{x:Null}" Height="30" Width="30" UseLayoutRounding="True" MaxWidth="30" MaxHeight="30" MinHeight="25" MinWidth="25" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" BorderThickness="0" BorderBrush="{x:Null}" Click="btContragentsListRefresh_Click" Foreground="{x:Null}" ToolTip="Обновить список" Margin="0,3,0,0" >
+                    <Image Source="Resources/imgRefresh.png" Height="Auto" Stretch="Fill" Width="Auto" HorizontalAlignment="Stretch"/>
+                </Button>
+                <DataGrid x:Name="dgContragents" Margin="0,35,0,0" AutoGenerateColumns="False" SelectionMode="Single" RowDetailsVisibilityMode="Collapsed" CanUserDeleteRows="False" CanUserAddRows="False" TabIndex="4" Loaded="DataGrid_Loaded" IsReadOnly="True" HeadersVisibility="Column" IsEnabled="True">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Binding="{Binding ClientRegID}" ClipboardContentBinding="{Binding ClientRegID}" Header="FSRAR ID" CanUserResize="False"/>
+                        <DataGridTextColumn Binding="{Binding FullName}" ClipboardContentBinding="{Binding null}" Header="Полное наименование" Visibility="Hidden"/>
+                        <DataGridTextColumn Binding="{Binding ShortName}" ClipboardContentBinding="{Binding null}" Header="Наименование"/>
+                        <DataGridTextColumn Binding="{Binding INN}" ClipboardContentBinding="{Binding null}" Header="ИНН"/>
+                        <DataGridTextColumn Binding="{Binding KPP}" ClipboardContentBinding="{Binding null}" Header="КПП"/>
+                        <DataGridTextColumn Binding="{Binding Address.Country}" ClipboardContentBinding="{Binding null}" Header="Страна"/>
+                        <DataGridTextColumn Binding="{Binding Address.Description}" ClipboardContentBinding="{Binding null}" Header="Адрес"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </GroupBox>
+    </Grid>
+</Window>

@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ns:Documents Version="1.0" 
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:ns=  "http://fsrar.ru/WEGAIS/WB_DOC_SINGLE_01"
+		xmlns:oref="http://fsrar.ru/WEGAIS/ClientRef"
+		xmlns:pref="http://fsrar.ru/WEGAIS/ProductRef"
+		xmlns:wa=  "http://fsrar.ru/WEGAIS/ActTTNSingle">
+	<ns:Owner>
+		<ns:FSRAR_ID>{0}</ns:FSRAR_ID>
+	</ns:Owner>
+	<ns:Document>
+		<ns:WayBillAct>
+			<wa:Header>
+				<wa:IsAccept>{1}</wa:IsAccept>
+				<wa:ACTNUMBER>{2}</wa:ACTNUMBER>
+				<wa:ActDate>{3}</wa:ActDate>
+				<wa:WBRegId>{4}</wa:WBRegId>
+				<wa:Note>{5}</wa:Note>
+			</wa:Header>
+			<wa:Content></wa:Content>
+		</ns:WayBillAct>
+	</ns:Document>
+</ns:Documents>

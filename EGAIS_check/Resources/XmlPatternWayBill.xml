@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ns:Documents Version="1.0"	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ns="http://fsrar.ru/WEGAIS/WB_DOC_SINGLE_01" xmlns:c="http://fsrar.ru/WEGAIS/Common" xmlns:oref="http://fsrar.ru/WEGAIS/ClientRef" xmlns:pref="http://fsrar.ru/WEGAIS/ProductRef" xmlns:wb= "http://fsrar.ru/WEGAIS/TTNSingle">
+	<ns:Owner>
+		<ns:FSRAR_ID>{0}</ns:FSRAR_ID>
+	</ns:Owner>
+	<ns:Document>
+		<ns:WayBill>
+			<wb:Header>
+				<wb:NUMBER>{1}</wb:NUMBER>
+				<wb:Date>{2}</wb:Date>
+				<wb:ShippingDate>{2}</wb:ShippingDate>
+				<wb:Type>{3}</wb:Type>
+				<wb:UnitType>Packed</wb:UnitType>
+				<wb:Shipper />
+				<wb:Consignee />
+				<wb:Transport />
+			</wb:Header>
+			<wb:Content />
+		</ns:WayBill>
+	</ns:Document>
+</ns:Documents>

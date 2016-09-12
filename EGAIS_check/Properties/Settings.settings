@@ -1,0 +1,50 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="AlcoBear.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="FSRAR_ID" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="UTM_host" Type="System.String" Scope="User">
+      <Value Profile="(Default)">localhost</Value>
+    </Setting>
+    <Setting Name="logFilePath" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">AlcoBear.log</Value>
+    </Setting>
+    <Setting Name="UTM_port" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">8080</Value>
+    </Setting>
+    <Setting Name="LastRestQueryID" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="LastRestQueryDateTime" Type="System.DateTime" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="LastRestsURL" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="LastRestsDateTime" Type="System.DateTime" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="LastPartnerQueryID" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="dbFilePath" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">AlcoBear.db</Value>
+    </Setting>
+    <Setting Name="CurrentSettings" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">2000</Value>
+    </Setting>
+    <Setting Name="Pattern_ActWriteOffReasons" Type="System.Collections.Specialized.StringCollection" Scope="Application">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;string&gt;Товар ненадлежащего качества&lt;/string&gt;
+  &lt;string&gt;Недостача&lt;/string&gt;
+  &lt;string&gt;Розничная реализация продукции, не подлежащая фиксации в ЕГАИС&lt;/string&gt;
+&lt;/ArrayOfString&gt;</Value>
+    </Setting>
+    <Setting Name="UpdateInfoFileUrl" Description="Путь к файлу с информацией о последней версии" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">ftp://{0}:{1}@ftp.sibatom.com/AlcoBear/AlcoBear.upd</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
