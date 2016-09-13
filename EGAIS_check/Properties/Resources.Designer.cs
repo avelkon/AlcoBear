@@ -61,16 +61,6 @@ namespace AlcoBear.Properties {
         }
         
         /// <summary>
-        ///   Поиск локализованного ресурса типа System.Byte[].
-        /// </summary>
-        public static byte[] AlcoBearUpdater {
-            get {
-                object obj = ResourceManager.GetObject("AlcoBearUpdater", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
         public static System.Drawing.Bitmap imgAdd {
@@ -182,7 +172,8 @@ namespace AlcoBear.Properties {
         ///				&lt;awr:ActNumber&gt;{1}&lt;/awr:ActNumber&gt;
         ///				&lt;awr:ActDate&gt;{2}&lt;/awr:ActDate&gt;
         ///				&lt;awr:TypeWriteOff&gt;{3}&lt;/awr:TypeWriteOff&gt;
-        ///			&lt;/a [остаток строки не уместился]&quot;;.
+        ///			&lt;/awr:Header&gt;
+        /// [остаток строки не уместился]&quot;;.
         /// </summary>
         public static string XMLPattern_ActWriteOff {
             get {
@@ -204,7 +195,7 @@ namespace AlcoBear.Properties {
         ///					&lt;qp:Value&gt;{2}&lt;/qp:Value&gt;
         ///				&lt;/qp:Parameter&gt;
         ///			&lt;/qp:Parameters&gt;
-        ///	 [остаток строки не уместился]&quot;;.
+        ///		&lt;/ns:QueryCl [остаток строки не уместился]&quot;;.
         /// </summary>
         public static string XMLPattern_QueryPartner {
             get {
@@ -239,7 +230,8 @@ namespace AlcoBear.Properties {
         ///		&lt;ns:WayBill&gt;
         ///			&lt;wb:Header&gt;
         ///				&lt;wb:NUMBER&gt;{1}&lt;/wb:NUMBER&gt;
-        ///				&lt;wb:Date&gt;{2}&lt;/ [остаток строки не уместился]&quot;;.
+        ///				&lt;wb:Date&gt;{2}&lt;/wb:Date&gt;
+        /// [остаток строки не уместился]&quot;;.
         /// </summary>
         public static string XMLPattern_WayBill {
             get {
@@ -262,7 +254,8 @@ namespace AlcoBear.Properties {
         ///		&lt;ns:WayBillAct&gt;
         ///			&lt;wa:Header&gt;
         ///				&lt;wa:IsAccept&gt;{1}&lt;/wa:IsAccept&gt;
-        ///				&lt;wa:ACTNUMBER&gt;{2}&lt;/wa:ACT [остаток строки не уместился]&quot;;.
+        ///				&lt;wa:ACTNUMBER&gt;{2}&lt;/wa:ACTNUMBER&gt;
+        ///				&lt;w [остаток строки не уместился]&quot;;.
         /// </summary>
         public static string XMLPattern_WayBillAct {
             get {

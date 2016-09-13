@@ -147,20 +147,6 @@ namespace AlcoBear.Properties {
             }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
-<ArrayOfString xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
-  <string>Товар ненадлежащего качества</string>
-  <string>Недостача</string>
-  <string>Розничная реализация продукции, не подлежащая фиксации в ЕГАИС</string>
-</ArrayOfString>")]
-        public global::System.Collections.Specialized.StringCollection Pattern_ActWriteOffReasons {
-            get {
-                return ((global::System.Collections.Specialized.StringCollection)(this["Pattern_ActWriteOffReasons"]));
-            }
-        }
-        
         /// <summary>
         /// Путь к файлу с информацией о последней версии
         /// </summary>
@@ -171,6 +157,26 @@ namespace AlcoBear.Properties {
         public string UpdateInfoFileUrl {
             get {
                 return ((string)(this["UpdateInfoFileUrl"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<ArrayOfString xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
+  <string>Пересортица</string>
+  <string>Недостача</string>
+  <string>Уценка</string>
+  <string>Порча</string>
+  <string>Потери</string>
+  <string>Проверки</string>
+  <string>Арест</string>
+  <string>Реализация</string>
+  <string>Иные цели</string>
+</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection ActWriteOffReasons {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["ActWriteOffReasons"]));
             }
         }
     }

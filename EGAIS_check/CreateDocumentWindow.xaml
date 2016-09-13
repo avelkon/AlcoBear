@@ -1,4 +1,4 @@
-﻿<Window x:Class="AlcoBear.CreateNewDocument"
+﻿<Window x:Class="AlcoBear.CreateNewDocumentWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Создание документа" Height="648" Width="1104.5" WindowStartupLocation="CenterOwner">
@@ -23,15 +23,24 @@
                 </DataGrid>
                 <TextBox x:Name="tbSearch" HorizontalAlignment="Left" Height="23" Margin="124,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="523" TextChanged="tbSearch_TextChanged"/>
                 <TextBlock HorizontalAlignment="Left" Margin="5,3,0,0" TextWrapping="Wrap" Text="Поиск по названию" VerticalAlignment="Top"/>
-                <ToggleButton x:Name="tbtAddAll" Content="Добавлять все" HorizontalAlignment="Right" VerticalAlignment="Top" Width="106" MaxHeight="22" MinHeight="20"/>
+                <ToggleButton x:Name="tbtAddAll" Content="Добавлять все" HorizontalAlignment="Right" VerticalAlignment="Top" Width="106" MaxHeight="22" MinHeight="20">
+                    <ToggleButton.Background>
+                        <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                            <GradientStop Color="#FFF3F3F3" Offset="0"/>
+                            <GradientStop Color="#FFEBEBEB" Offset="0.5"/>
+                            <GradientStop Color="#FFDDDDDD" Offset="0.5"/>
+                            <GradientStop Color="#FFCDCDCD" Offset="1"/>
+                        </LinearGradientBrush>
+                    </ToggleButton.Background>
+                </ToggleButton>
             </Grid>
         </GroupBox>
         <!-- -->
         <GridSplitter HorizontalAlignment="Stretch" Height="5" Margin="0" Grid.Row="1" VerticalAlignment="Top" ResizeDirection="Rows" ShowsPreview="True"/>
         <!-- Positions to return DataGrid -->
-        <GroupBox Margin="5,2,5,0" Header="Позиции ТТН" Grid.Row="1">
+        <GroupBox Margin="5,2,5,0" Header="Выбранные позиции" Grid.Row="1">
             <Grid ScrollViewer.VerticalScrollBarVisibility="Disabled" Margin="2,0,-2,0">
-                <DataGrid x:Name="dgReturnPos" Margin="0,35,0,0" AutoGenerateColumns="False" RowDetailsVisibilityMode="Collapsed" AllowDrop="False" Loaded="dgReturnPos_Loaded" SelectionMode="Single" MouseDoubleClick="dgPositions_MouseDoubleClick" CanUserAddRows="False" HeadersVisibility="Column" IsEnabled="False">
+                <DataGrid x:Name="dgReturnPos" Margin="0,35,0,0" AutoGenerateColumns="False" RowDetailsVisibilityMode="Collapsed" AllowDrop="False" Loaded="dgReturnPos_Loaded" SelectionMode="Single" MouseDoubleClick="dgPositions_MouseDoubleClick" CanUserAddRows="False" HeadersVisibility="Column" IsEnabled="{Binding IsEnabled, ElementName=dgRestsPos}">
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding QuantityToReturn, Mode=TwoWay}" Header="Кол-во" IsReadOnly="False" CanUserResize="False" MaxWidth="50" MinWidth="50" Width="50" />
                         <DataGridTextColumn Binding="{Binding Price, Mode=TwoWay}" Header="Цена" IsReadOnly="False" CanUserResize="False" MaxWidth="50" MinWidth="50" Width="50" x:Name="dgReturn_columnPrice"/>
@@ -43,13 +52,15 @@
                         <DataGridTextColumn Binding="{Binding InformBRegID}" Header="Справка 'B'" IsReadOnly="True"/>
                     </DataGrid.Columns>
                 </DataGrid>
-                <ComboBox x:Name="cbOrgList" HorizontalAlignment="Right" Margin="0,5,5,0" VerticalAlignment="Top" Width="331" Loaded="cbOrgList_Loaded" IsEnabled="False" MaxHeight="22" MinHeight="20"/>
-                <Label x:Name="lbClient" Content="Получатель" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,2,341,0" ScrollViewer.VerticalScrollBarVisibility="Disabled"/>
+                <ComboBox x:Name="cbInfoComboBox" HorizontalAlignment="Right" Margin="0,5,5,0" VerticalAlignment="Top" Width="350" IsEnabled="False" MaxHeight="22" MinHeight="20"/>
+                <Label x:Name="lbInfoLabel" Content="lbInfoLabel" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,2,360,0" ScrollViewer.VerticalScrollBarVisibility="Disabled"/>
                 <ComboBox x:Name="cbDocumentType" HorizontalAlignment="Left" Width="300" Margin="99,5,0,0" VerticalAlignment="Top" FlowDirection="LeftToRight" Loaded="cbDocumentType_Loaded" SelectionChanged="cbDocumentType_SelectionChanged" Height="22" MaxHeight="22" MinHeight="20">
-                    <ComboBoxItem x:Name="cbItem_TTN" Content="Товарно-транспортная накладная" Tag="WBInvoiceFromMe"/>
-                    <ComboBoxItem x:Name="cbItem_Return" Content="Возвратная накладная" Tag="WBReturnFromMe" />
-                    <ComboBoxItem x:Name="cbItem_ActWriteOf" Content="Акт списания"  Tag="ActWriteOff" />
-                    <ComboBoxItem x:Name="cbItem_ActChargeOn" IsEnabled="False" Content="Акт постановки на баланс"  Tag="ActChargeOn" />
+                    <!-- Свойство Tag прописано в коде -->
+                    <ComboBoxItem x:Name="cbItem_TTN" Content="Товарно-транспортная накладная" />
+                    <ComboBoxItem x:Name="cbItem_Return" Content="Возвратная накладная" />
+                    <ComboBoxItem x:Name="cbItem_ActWriteOff" Content="Акт списания" />
+                    <ComboBoxItem x:Name="cbItem_ActWriteOffShop" IsEnabled="False" Visibility="Collapsed" Content="Акт списания из торгового зала" />
+                    <ComboBoxItem x:Name="cbItem_ActChargeOn" IsEnabled="False" Visibility="Collapsed" Content="Акт постановки на баланс" />
                 </ComboBox>
                 <Label Content="Тип документа:" FlowDirection="LeftToRight" Margin="5,2,0,0" HorizontalAlignment="Left" Width="94" Height="29" VerticalAlignment="Top" />
             </Grid>

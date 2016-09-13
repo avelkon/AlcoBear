@@ -168,8 +168,4 @@
     <value>..\Resources\XmlPatternActWriteOff.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
     <comment>XML-шаблон акта списания</comment>
   </data>
-  <data name="AlcoBearUpdater" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\AlcoBearUpdater.exe;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-    <comment>Утилита обновления</comment>
-  </data>
 </root>

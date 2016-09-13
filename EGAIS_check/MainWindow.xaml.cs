@@ -194,7 +194,7 @@ namespace AlcoBear
         private void btCreateNewDocument_Click(object sender, RoutedEventArgs e)
         {
             this.Cursor = Cursors.Wait;
-            Window return_window = new CreateNewDocument();
+            Window return_window = new CreateNewDocumentWindow();
             return_window.Owner = this;
             this.Cursor = Cursors.Arrow;
             return_window.ShowDialog();

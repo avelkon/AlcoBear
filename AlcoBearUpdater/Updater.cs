@@ -107,6 +107,7 @@ namespace AlcoBearUpdater
                 File.Delete(old_file);
                 Console.WriteLine("Файл \"" + old_file + "\" удален");
             }
+            if(args.Length > 0 && args[0].Equals("--delete-all"))
             foreach(string files in filesToDelete)
             {
                 File.Delete(files);

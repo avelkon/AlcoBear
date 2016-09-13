@@ -9,18 +9,20 @@ using System.Windows.Input;
 namespace AlcoBear
 {
     /// <summary>
-    /// Логика взаимодействия для CreateNewDocument.xaml
+    /// Логика взаимодействия для CreateNewDocumentWindow.xaml
     /// </summary>
-    public partial class CreateNewDocument : Window
+    public partial class CreateNewDocumentWindow : Window
     {
 
         private ObservableCollection<StockPosition> posToReturn = new ObservableCollection<StockPosition>();
 
-        public CreateNewDocument()
+        public CreateNewDocumentWindow()
         {
             InitializeComponent();
-            lbClient.Visibility = System.Windows.Visibility.Hidden;
-            cbOrgList.Visibility = System.Windows.Visibility.Hidden;
+            lbInfoLabel.Visibility = System.Windows.Visibility.Hidden;
+            cbInfoComboBox.Visibility = System.Windows.Visibility.Hidden;
+            cbInfoComboBox.Items.Clear();
+            dgReturn_columnPrice.Visibility = System.Windows.Visibility.Hidden;
             Utils.DownloadDocuments(parseWayBills: false, parseRests: true, parseParthers: true);
         }
 
@@ -76,13 +78,7 @@ namespace AlcoBear
             this.tbSearch.Clear();
             Utils.DownloadDocuments(parseWayBills: false, parseRests: true, parseParthers: true);
             tbStatusMessage.Text = "Таблица остатков обновлена";
-            if (dgRestsPos.Items.Count > 0)
-            {
-                dgRestsPos.IsEnabled = true;
-                dgReturnPos.IsEnabled = true;
-            }
-            cbOrgList.ItemsSource = DataBaseEntry.GetContractors();
-            cbOrgList.IsEnabled = cbOrgList.Items.Count > 0;
+            dgRestsPos.IsEnabled = dgRestsPos.Items.Count > 0;
         }
 
         private void btSendDocument_Click(object sender, RoutedEventArgs e)
@@ -95,34 +91,28 @@ namespace AlcoBear
                 //Создание нового акта списания товара
                 if (docType == Utils.DocumentTypes.ActWriteOff)
                 {
-                    AddCommentWindow commentWindow = new AddCommentWindow(Properties.Settings.Default.Pattern_ActWriteOffReasons);
-                    commentWindow.Owner = this;
-                    bool? dialogResult = commentWindow.ShowDialog();
-                    if (!dialogResult.HasValue || !dialogResult.Value)
-                    {
-                        tbStatusMessage.Text = "Не указанна причина списания товара";
-                        throw new NullReferenceException("Не указанна причина списания товара");
-                    }
-                    if (Utils.SendActWriteOff(dgReturnPos.ItemsSource as IEnumerable<StockPosition>, commentWindow.Comment))
+                    if (cbInfoComboBox.SelectedIndex == -1) throw new NullReferenceException("Не указанна причина списания товара");
+                    if (dgReturnPos.Items.Count < 1 || !dgReturnPos.IsEnabled) throw new NullReferenceException("Не указанна причина списания товара");
+
+                    if (Utils.SendActWriteOff(dgReturnPos.ItemsSource as IEnumerable<StockPosition>, cbInfoComboBox.SelectedItem.ToString()))
                     {
                         tbStatusMessage.Text = "Акт списания успешно отправлен в УТМ";
                     }
                     else
                     {
-                        tbStatusMessage.Text = "Ошибка при формировании акта списания";
                         throw new Exception("Ошибка при формировании акта списания");
                     }
                 }
                 //Создание нового акта постановки на баланс
                 else if(docType == Utils.DocumentTypes.ActChargeOn)
                 {
-                    return;
+                    throw new NotSupportedException();
                 }
                 //Создание новой ТТН
                 else if (docType == Utils.DocumentTypes.WBInvoiceFromMe || docType == Utils.DocumentTypes.WBReturnFromMe)
                 {
-                    if (cbOrgList.SelectedIndex == -1) throw new NullReferenceException("Не выбран получатель");
-                    if (Utils.SendWayBill(cbOrgList.SelectedItem as Contractor, dgReturnPos.ItemsSource as IEnumerable<StockPosition>, docType))
+                    if (cbInfoComboBox.SelectedIndex == -1) throw new NullReferenceException("Не выбран получатель");
+                    if (Utils.SendWayBill(cbInfoComboBox.SelectedItem as Contractor, dgReturnPos.ItemsSource as IEnumerable<StockPosition>, docType))
                     {
                         tbStatusMessage.Text = "Возвратная накладная отправлена в УТМ";
                     }
@@ -143,14 +133,6 @@ namespace AlcoBear
             }
         }
 
-        private void cbOrgList_Loaded(object sender, RoutedEventArgs e)
-        {
-            ComboBox cb = sender as ComboBox;
-            cb.ItemsSource = DataBaseEntry.GetContractors();
-            if (cb.Items.Count > 0) cb.IsEnabled = true;
-            else cb.IsEnabled = false;
-        }
-
         private void tbSearch_TextChanged(object sender, TextChangedEventArgs e)
         {
             foreach (StockPosition pos in Utils.restsList)
@@ -168,24 +150,55 @@ namespace AlcoBear
         {
             cbItem_Return.Tag = Utils.DocumentTypes.WBReturnFromMe;
             cbItem_TTN.Tag = Utils.DocumentTypes.WBInvoiceFromMe;
-            cbItem_ActWriteOf.Tag = Utils.DocumentTypes.ActWriteOff;
+            cbItem_ActWriteOff.Tag = Utils.DocumentTypes.ActWriteOff;
+            cbItem_ActWriteOffShop.Tag = Utils.DocumentTypes.ActWriteOffShop;
             cbItem_ActChargeOn.Tag = Utils.DocumentTypes.ActChargeOn;
+        }
+
+        private void LoadOrgList(ComboBox comboBox, Label label)
+        {
+            label.Visibility = System.Windows.Visibility.Visible;
+            label.Content = "Получатель";
+            dgReturn_columnPrice.Visibility = System.Windows.Visibility.Visible;
+            cbInfoComboBox.Visibility = System.Windows.Visibility.Visible;
+            try { comboBox.ItemsSource = DataBaseEntry.GetContractors(); }
+            catch { comboBox.ItemsSource = null; }
+            comboBox.IsEnabled = comboBox.Items.Count > 0;
+        }
+
+        private void LoadWriteOffReasons(ComboBox comboBox, Label label)
+        {
+            label.Content = "Причина списания";
+            label.Visibility = System.Windows.Visibility.Visible;
+            dgReturn_columnPrice.Visibility = System.Windows.Visibility.Hidden;
+            cbInfoComboBox.Visibility = System.Windows.Visibility.Visible;
+            try { comboBox.ItemsSource = Properties.Settings.Default.ActWriteOffReasons; }
+            catch { comboBox.ItemsSource = null; }
+            comboBox.IsEnabled = comboBox.Items.Count > 0;
         }
 
         private void cbDocumentType_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Utils.DocumentTypes selectedType = (Utils.DocumentTypes)(((sender as ComboBox).SelectedItem as ComboBoxItem).Tag);
-            if (selectedType == Utils.DocumentTypes.WBInvoiceFromMe || selectedType == Utils.DocumentTypes.WBReturnFromMe)
+            if ((sender as ComboBox).SelectedIndex == -1)
             {
-                cbOrgList.Visibility = System.Windows.Visibility.Visible;
-                lbClient.Visibility = System.Windows.Visibility.Visible;
-                dgReturn_columnPrice.Visibility = System.Windows.Visibility.Visible;
-            }
-            else if (selectedType == Utils.DocumentTypes.ActWriteOff || selectedType == Utils.DocumentTypes.ActChargeOn)
-            {
-                cbOrgList.Visibility = System.Windows.Visibility.Hidden;
-                lbClient.Visibility = System.Windows.Visibility.Hidden;
+                //Если ничего не выбрано
+                lbInfoLabel.Visibility = System.Windows.Visibility.Hidden;
+                cbInfoComboBox.Visibility = System.Windows.Visibility.Hidden;
                 dgReturn_columnPrice.Visibility = System.Windows.Visibility.Hidden;
+            }
+            else
+            {
+                Utils.DocumentTypes selectedType = (Utils.DocumentTypes)(((sender as ComboBox).SelectedItem as ComboBoxItem).Tag);
+                if (selectedType == Utils.DocumentTypes.WBInvoiceFromMe || selectedType == Utils.DocumentTypes.WBReturnFromMe)
+                {
+                    //Если выбраны ТТН
+                    LoadOrgList(cbInfoComboBox, lbInfoLabel);
+                }
+                else if (selectedType == Utils.DocumentTypes.ActWriteOff || selectedType == Utils.DocumentTypes.ActWriteOffShop || selectedType == Utils.DocumentTypes.ActChargeOn)
+                {
+                    //Если выбран акт списания или акт постановки на учет
+                    LoadWriteOffReasons(cbInfoComboBox, lbInfoLabel);
+                }
             }
         }
 

@@ -17,7 +17,7 @@ namespace AlcoBear
         /// </summary>
         public enum MessageType : int { MSG, ERROR, WARRING };        
 
-        public enum DocumentTypes { WBInvoiceFromMe, WBReturnFromMe, WBInvoiceToMe, WBReturnToMe, ActWriteOff, ActChargeOn };
+        public enum DocumentTypes { WBInvoiceFromMe, WBReturnFromMe, WBInvoiceToMe, WBReturnToMe, ActWriteOff, ActWriteOffShop, ActChargeOn };
 
         private const string UpdateInfo_login = @"egais_check";
 
@@ -60,7 +60,7 @@ namespace AlcoBear
             /// URL, на который отправляются акты списания
             /// (default: /opt/in/ActWriteOff)
             /// </summary>
-            public static string ActWriteOff = BuildURL("opt/in/ActWriteOff");
+            public static string ActWriteOff = BuildURL("opt/in/ActWriteOff_v2");
         }
 
         /// <summary>
@@ -148,7 +148,8 @@ namespace AlcoBear
             try
             {
                 if (!Directory.Exists("Upload")) Directory.CreateDirectory("Upload");
-                File.WriteAllText("Upload\\" + DateTime.Now.ToString("yyyy-MM-dd_hh-mm-ss") + ".xml", fileContent);
+                string xmlName = DateTime.Now.ToString("yyyy-MM-dd_hh-mm-ss");
+                File.WriteAllText("Upload\\" + xmlName + ".xml", fileContent);
                 System.Net.ServicePointManager.Expect100Continue = false;
                 string boundary = "xxxxxxxxxxxxxxxxxxxxxxx" + DateTime.Now.Ticks.ToString("x");
                 byte[] boundarybytes = Encoding.ASCII.GetBytes("\r\n--" + boundary + "\r\n");
@@ -174,7 +175,9 @@ namespace AlcoBear
                         {
                             using (StreamReader reader = new StreamReader(respst))
                             {
-                                return reader.ReadToEnd();
+                                string responseString = reader.ReadToEnd();
+                                File.WriteAllText("Upload\\" + xmlName + "_resp.xml", responseString);
+                                return responseString;
                             }
                         }
                     }
@@ -318,8 +321,6 @@ namespace AlcoBear
                 if (parseWayBills)
                     for (int i = 0; i < incomeWayBillsList.Count; i++)
                     {
-                        //if (incomeWayBillsList[i].WayBillType.Equals(Utils.WayBillTypes.WBInvoiceFromMe.ToString()) ||
-                        //    incomeWayBillsList[i].WayBillType.Equals(Utils.WayBillTypes.WBReturnFromMe.ToString())) continue;
                         foreach (FormBRegInfo formb in incomeFormBList)
                         {
                             if (formb.Equals(incomeWayBillsList[i]))
@@ -451,6 +452,12 @@ namespace AlcoBear
             return "albr-" + pref + "-" + new Random().Next(1, 10000000).ToString() + "-" + new Random().Next(1, 1000).ToString();
         }
 
+        /// <summary>
+        /// Отправляет акт списания
+        /// </summary>
+        /// <param name="positionsList">товарные позиции акта</param>
+        /// <param name="writeOffReason">причина списания</param>
+        /// <returns>TRUE при успешной отправке акта, иначе - FALSE</returns>
         public static bool SendActWriteOff(IEnumerable<StockPosition> positionsList, string writeOffReason)
         {
             XDocument actWriteOff = XDocument.Parse(String.Format(
@@ -475,6 +482,18 @@ namespace AlcoBear
             return SendXML(actWriteOff.ToString(), URLs.ActWriteOff);
         }
 
+        public static bool SendActWriteOffShop(IEnumerable<StockPosition> positionsList, string writeOffReason)
+        {
+            throw new NotSupportedException();
+        }
+        
+        /// <summary>
+        /// Отправка ТТН
+        /// </summary>
+        /// <param name="consignee">получатель</param>
+        /// <param name="toWBPositionsList">товарные позиции документа</param>
+        /// <param name="type">тип документа</param>
+        /// <returns>TRUE при успешной отправке документа, иначе - FALSE</returns>
         public static bool SendWayBill(Contractor consignee, IEnumerable<StockPosition> toWBPositionsList, DocumentTypes type)
         {
             //Сформировать накладную на возврат
@@ -535,6 +554,7 @@ namespace AlcoBear
             {
                 throw new WebException("Ошибка при подключении к серверу обновлений");
             }
+
             //Парсинг параметров обновления
             foreach (string s in updateFileContent)
                 if (!String.IsNullOrWhiteSpace(s))
@@ -558,6 +578,9 @@ namespace AlcoBear
             else return false;
         }
 
+        /// <summary>
+        /// Запускает процесс обновления
+        /// </summary>
         public static void StartUpdate()
         {
             System.Diagnostics.Process updater = new System.Diagnostics.Process()
@@ -565,7 +588,6 @@ namespace AlcoBear
                 StartInfo = new System.Diagnostics.ProcessStartInfo()
                 {
                     FileName = "AlcoBearUpdater.exe",
-                    Arguments = "--all",
                     UseShellExecute = true
                 }
             };

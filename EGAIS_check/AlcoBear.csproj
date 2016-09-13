@@ -116,9 +116,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="AddCommentWindow.xaml.cs">
-      <DependentUpon>AddCommentWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="ContragentsWindow.xaml.cs">
       <DependentUpon>ContragentsWindow.xaml</DependentUpon>
     </Compile>
@@ -131,17 +128,13 @@
     <Compile Include="RejectWindow.xaml.cs">
       <DependentUpon>RejectWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ReturnWindow.xaml.cs">
-      <DependentUpon>ReturnWindow.xaml</DependentUpon>
+    <Compile Include="CreateDocumentWindow.xaml.cs">
+      <DependentUpon>CreateDocumentWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utils.cs" />
-    <Page Include="AddCommentWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="avel_styles.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -170,7 +163,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ReturnWindow.xaml">
+    <Page Include="CreateDocumentWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -310,11 +303,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\XmlPatternActWriteOff.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\AlcoBearUpdater.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>

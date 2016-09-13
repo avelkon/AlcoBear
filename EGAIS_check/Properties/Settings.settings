@@ -35,16 +35,22 @@
     <Setting Name="CurrentSettings" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">2000</Value>
     </Setting>
-    <Setting Name="Pattern_ActWriteOffReasons" Type="System.Collections.Specialized.StringCollection" Scope="Application">
-      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
-&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
-  &lt;string&gt;Товар ненадлежащего качества&lt;/string&gt;
-  &lt;string&gt;Недостача&lt;/string&gt;
-  &lt;string&gt;Розничная реализация продукции, не подлежащая фиксации в ЕГАИС&lt;/string&gt;
-&lt;/ArrayOfString&gt;</Value>
-    </Setting>
     <Setting Name="UpdateInfoFileUrl" Description="Путь к файлу с информацией о последней версии" Type="System.String" Scope="Application">
       <Value Profile="(Default)">ftp://{0}:{1}@ftp.sibatom.com/AlcoBear/AlcoBear.upd</Value>
+    </Setting>
+    <Setting Name="ActWriteOffReasons" Type="System.Collections.Specialized.StringCollection" Scope="Application">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;string&gt;Пересортица&lt;/string&gt;
+  &lt;string&gt;Недостача&lt;/string&gt;
+  &lt;string&gt;Уценка&lt;/string&gt;
+  &lt;string&gt;Порча&lt;/string&gt;
+  &lt;string&gt;Потери&lt;/string&gt;
+  &lt;string&gt;Проверки&lt;/string&gt;
+  &lt;string&gt;Арест&lt;/string&gt;
+  &lt;string&gt;Реализация&lt;/string&gt;
+  &lt;string&gt;Иные цели&lt;/string&gt;
+&lt;/ArrayOfString&gt;</Value>
     </Setting>
   </Settings>
 </SettingsFile>

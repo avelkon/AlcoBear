@@ -335,8 +335,9 @@ namespace AlcoBear
                 XNamespace pref = XMLNode.GetNamespaceOfPrefix("pref");
                 XMLNode.Add(new XElement(awr + "Identity", identity));
                 XMLNode.Add(new XElement(awr + "Quantity", this.QuantityToReturn));
-                XMLNode.Add(new XElement(awr + "InformB"));
-                XMLNode.Element(awr + "InformB").Add(new XElement(pref + "BRegId", this.InformBRegID));
+                XMLNode.Add(new XElement(awr + "InformF1F2"));
+                XMLNode.Element(awr + "InformF1F2").Add(new XElement(awr + "InformF2"));
+                XMLNode.Element(awr + "InformF1F2").Element(awr + "InformF2").Add(new XElement(pref + "F2RegId", this.InformBRegID));
             }
             catch { throw; }
         }
