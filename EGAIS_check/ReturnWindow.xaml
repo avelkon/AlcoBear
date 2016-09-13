@@ -1,7 +1,7 @@
 ﻿<Window x:Class="AlcoBear.CreateNewDocument"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Создание ТТН" Height="648" Width="1104.5" WindowStartupLocation="CenterOwner">
+        Title="Создание документа" Height="648" Width="1104.5" WindowStartupLocation="CenterOwner">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="211*"/>
@@ -23,17 +23,18 @@
                 </DataGrid>
                 <TextBox x:Name="tbSearch" HorizontalAlignment="Left" Height="23" Margin="124,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="523" TextChanged="tbSearch_TextChanged"/>
                 <TextBlock HorizontalAlignment="Left" Margin="5,3,0,0" TextWrapping="Wrap" Text="Поиск по названию" VerticalAlignment="Top"/>
+                <ToggleButton x:Name="tbtAddAll" Content="Добавлять все" HorizontalAlignment="Right" VerticalAlignment="Top" Width="106" MaxHeight="22" MinHeight="20"/>
             </Grid>
         </GroupBox>
         <!-- -->
         <GridSplitter HorizontalAlignment="Stretch" Height="5" Margin="0" Grid.Row="1" VerticalAlignment="Top" ResizeDirection="Rows" ShowsPreview="True"/>
         <!-- Positions to return DataGrid -->
         <GroupBox Margin="5,2,5,0" Header="Позиции ТТН" Grid.Row="1">
-            <Grid ScrollViewer.VerticalScrollBarVisibility="Disabled">
+            <Grid ScrollViewer.VerticalScrollBarVisibility="Disabled" Margin="2,0,-2,0">
                 <DataGrid x:Name="dgReturnPos" Margin="0,35,0,0" AutoGenerateColumns="False" RowDetailsVisibilityMode="Collapsed" AllowDrop="False" Loaded="dgReturnPos_Loaded" SelectionMode="Single" MouseDoubleClick="dgPositions_MouseDoubleClick" CanUserAddRows="False" HeadersVisibility="Column" IsEnabled="False">
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding QuantityToReturn, Mode=TwoWay}" Header="Кол-во" IsReadOnly="False" CanUserResize="False" MaxWidth="50" MinWidth="50" Width="50" />
-                        <DataGridTextColumn Binding="{Binding Price, Mode=TwoWay}" Header="Цена" IsReadOnly="False" CanUserResize="False" MaxWidth="50" MinWidth="50" Width="50" />
+                        <DataGridTextColumn Binding="{Binding Price, Mode=TwoWay}" Header="Цена" IsReadOnly="False" CanUserResize="False" MaxWidth="50" MinWidth="50" Width="50" x:Name="dgReturn_columnPrice"/>
                         <DataGridTextColumn Binding="{Binding Quantity}" Header="Всего" IsReadOnly="True" CanUserResize="False" MaxWidth="40" MinWidth="40" Width="40" />
                         <DataGridTextColumn Binding="{Binding FullName}" Header="Наименование" IsReadOnly="True"/>
                         <DataGridTextColumn Binding="{Binding Capacity}" Header="Объем" IsReadOnly="True"/>
@@ -42,8 +43,15 @@
                         <DataGridTextColumn Binding="{Binding InformBRegID}" Header="Справка 'B'" IsReadOnly="True"/>
                     </DataGrid.Columns>
                 </DataGrid>
-                <ComboBox x:Name="cbOrgList" HorizontalAlignment="Left" Margin="89,4,0,0" VerticalAlignment="Top" Width="331" Loaded="cbOrgList_Loaded" IsEnabled="False"/>
-                <Label Content="Получатель" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0,0,0"/>
+                <ComboBox x:Name="cbOrgList" HorizontalAlignment="Right" Margin="0,5,5,0" VerticalAlignment="Top" Width="331" Loaded="cbOrgList_Loaded" IsEnabled="False" MaxHeight="22" MinHeight="20"/>
+                <Label x:Name="lbClient" Content="Получатель" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,2,341,0" ScrollViewer.VerticalScrollBarVisibility="Disabled"/>
+                <ComboBox x:Name="cbDocumentType" HorizontalAlignment="Left" Width="300" Margin="99,5,0,0" VerticalAlignment="Top" FlowDirection="LeftToRight" Loaded="cbDocumentType_Loaded" SelectionChanged="cbDocumentType_SelectionChanged" Height="22" MaxHeight="22" MinHeight="20">
+                    <ComboBoxItem x:Name="cbItem_TTN" Content="Товарно-транспортная накладная" Tag="WBInvoiceFromMe"/>
+                    <ComboBoxItem x:Name="cbItem_Return" Content="Возвратная накладная" Tag="WBReturnFromMe" />
+                    <ComboBoxItem x:Name="cbItem_ActWriteOf" Content="Акт списания"  Tag="ActWriteOff" />
+                    <ComboBoxItem x:Name="cbItem_ActChargeOn" IsEnabled="False" Content="Акт постановки на баланс"  Tag="ActChargeOn" />
+                </ComboBox>
+                <Label Content="Тип документа:" FlowDirection="LeftToRight" Margin="5,2,0,0" HorizontalAlignment="Left" Width="94" Height="29" VerticalAlignment="Top" />
             </Grid>
         </GroupBox>
         <!-- -->
@@ -61,13 +69,6 @@
             <Button x:Name="btSendDocument" HorizontalAlignment="Right" VerticalAlignment="Top" Background="{x:Null}" Height="30" Width="30" UseLayoutRounding="True" MaxWidth="30" MaxHeight="30" MinHeight="25" MinWidth="25" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" BorderThickness="0" BorderBrush="{x:Null}" Click="btSendDocument_Click" Foreground="{x:Null}" ToolTip="Сформировать накладную">
                 <Image Source="Resources/imgSend.png" Height="Auto" Stretch="Fill" Width="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
             </Button>
-            <ComboBox x:Name="cbDocumentType" HorizontalAlignment="Left" Width="300" Margin="10,4,0,4" VerticalAlignment="Center" FlowDirection="LeftToRight" Loaded="cbDocumentType_Loaded" SelectionChanged="cbDocumentType_SelectionChanged">
-                <ComboBoxItem x:Name="cbItem_TTN" Content="Товарно-транспортная накладная" Tag="WBInvoiceFromMe"/>
-                <ComboBoxItem x:Name="cbItem_Return" Content="Возвратная накладная" Tag="WBReturnFromMe" />
-                <ComboBoxItem x:Name="cbItem_ActWriteOf" Content="Акт списания"  Tag="ActWriteOff" />
-                <ComboBoxItem x:Name="cbItem_ActChargeOn" IsEnabled="False" Content="Акт постановки на баланс"  Tag="ActChargeOn" />
-            </ComboBox>
-            <Label Content="Тип документа:" FlowDirection="LeftToRight" />
         </StackPanel>
         <StatusBar Height="23" Margin="0" VerticalAlignment="Bottom" Grid.Row="2" MinHeight="23" MaxHeight="23">
             <TextBlock x:Name="tbStatusMessage" />

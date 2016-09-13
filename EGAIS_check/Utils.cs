@@ -147,6 +147,9 @@ namespace AlcoBear
         {
             try
             {
+                if (!Directory.Exists("Upload")) Directory.CreateDirectory("Upload");
+                File.WriteAllText("Upload\\" + DateTime.Now.ToString("yyyy-MM-dd_hh-mm-ss") + ".xml", fileContent);
+                System.Net.ServicePointManager.Expect100Continue = false;
                 string boundary = "xxxxxxxxxxxxxxxxxxxxxxx" + DateTime.Now.Ticks.ToString("x");
                 byte[] boundarybytes = Encoding.ASCII.GetBytes("\r\n--" + boundary + "\r\n");
                 HttpWebRequest wr = (HttpWebRequest)WebRequest.Create(String.IsNullOrWhiteSpace(url) ? URLs.outcomeWayBillAct : url);
@@ -163,16 +166,19 @@ namespace AlcoBear
                 byte[] trailer = Encoding.ASCII.GetBytes("\r\n--" + boundary + "--\r\n");
                 rs.Write(trailer, 0, trailer.Length);
                 rs.Close();
-                WebResponse wresp = wr.GetResponse();
-                if (wr.HaveResponse)
+                using (WebResponse wresp = wr.GetResponse())
                 {
-                    using (Stream respst = wresp.GetResponseStream())
+                    if (wr.HaveResponse)
                     {
-                        using(StreamReader reader = new StreamReader(respst))
+                        using (Stream respst = wresp.GetResponseStream())
                         {
-                            return reader.ReadToEnd();
+                            using (StreamReader reader = new StreamReader(respst))
+                            {
+                                return reader.ReadToEnd();
+                            }
                         }
                     }
+                    wresp.Close();
                 }
                 return null;
             }
@@ -531,7 +537,7 @@ namespace AlcoBear
             }
             //Парсинг параметров обновления
             foreach (string s in updateFileContent)
-                if (String.IsNullOrWhiteSpace(s))
+                if (!String.IsNullOrWhiteSpace(s))
                 {
                     string[] setting = s.Trim().Split('=');
                     if (setting[0].Equals("[update]", StringComparison.CurrentCultureIgnoreCase) && !(setting[1].Equals("1") || setting[1].ToLower().Equals("on"))) return false;
@@ -559,7 +565,8 @@ namespace AlcoBear
                 StartInfo = new System.Diagnostics.ProcessStartInfo()
                 {
                     FileName = "AlcoBearUpdater.exe",
-                    Arguments = "--all"
+                    Arguments = "--all",
+                    UseShellExecute = true
                 }
             };
             updater.Start();

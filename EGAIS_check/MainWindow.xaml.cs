@@ -24,10 +24,11 @@ namespace AlcoBear
             {
                 if (Utils.CheckUpdate())
                 {
-                    if (MessageBox.Show("", "Обновление", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) == MessageBoxResult.Yes) 
+                    if (MessageBox.Show("Необходимо обновить программу\nСделать это сейчас?", "Обновление", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) == MessageBoxResult.Yes) 
                     {
                         //Обновляем
                         Utils.StartUpdate();
+                        
                         this.Close();
                     }
                     else

@@ -19,6 +19,8 @@ namespace AlcoBear
         public CreateNewDocument()
         {
             InitializeComponent();
+            lbClient.Visibility = System.Windows.Visibility.Hidden;
+            cbOrgList.Visibility = System.Windows.Visibility.Hidden;
             Utils.DownloadDocuments(parseWayBills: false, parseRests: true, parseParthers: true);
         }
 
@@ -35,7 +37,6 @@ namespace AlcoBear
 
         private void btSendRestsQuery_Click(object sender, RoutedEventArgs e)
         {
-            //Thread req_tr = new Thread(Utils.Requests.Rests);
             tbStatusMessage.Text = "Отправка запроса в УТМ...";
             tbStatusMessage.Text = Utils.Requests.Rests() ? "Запрос отправлен в УТМ" : "Ошибка при формировании запроса";
         }
@@ -48,7 +49,8 @@ namespace AlcoBear
         private void swapDataGridRows(StockPosition position, ObservableCollection<StockPosition> DataGridToDel, ObservableCollection<StockPosition> DataGridToAdd)
         {
             DataGridToDel.Remove(position);
-            position.QuantityToReturn = 0;
+            if (tbtAddAll.IsChecked != true) position.QuantityToReturn = 0;
+            else position.QuantityToReturn = position.Quantity;
             DataGridToAdd.Add(position);
         }
 
@@ -145,6 +147,8 @@ namespace AlcoBear
         {
             ComboBox cb = sender as ComboBox;
             cb.ItemsSource = DataBaseEntry.GetContractors();
+            if (cb.Items.Count > 0) cb.IsEnabled = true;
+            else cb.IsEnabled = false;
         }
 
         private void tbSearch_TextChanged(object sender, TextChangedEventArgs e)
@@ -173,11 +177,15 @@ namespace AlcoBear
             Utils.DocumentTypes selectedType = (Utils.DocumentTypes)(((sender as ComboBox).SelectedItem as ComboBoxItem).Tag);
             if (selectedType == Utils.DocumentTypes.WBInvoiceFromMe || selectedType == Utils.DocumentTypes.WBReturnFromMe)
             {
-                cbOrgList.IsEnabled = true;
+                cbOrgList.Visibility = System.Windows.Visibility.Visible;
+                lbClient.Visibility = System.Windows.Visibility.Visible;
+                dgReturn_columnPrice.Visibility = System.Windows.Visibility.Visible;
             }
             else if (selectedType == Utils.DocumentTypes.ActWriteOff || selectedType == Utils.DocumentTypes.ActChargeOn)
             {
-                cbOrgList.IsEnabled = false;
+                cbOrgList.Visibility = System.Windows.Visibility.Hidden;
+                lbClient.Visibility = System.Windows.Visibility.Hidden;
+                dgReturn_columnPrice.Visibility = System.Windows.Visibility.Hidden;
             }
         }
 

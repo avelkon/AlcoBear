@@ -44,28 +44,37 @@ namespace AlcoBearUpdater
             //Wait if AlcoBear kill himself
             Thread.Sleep(1000);
             //Kill AlcoBear's processes
-            Process[] alcobearsProcs = Process.GetProcessesByName("AlcoBear");
-            foreach (Process proc in alcobearsProcs)
+            try
             {
-                proc.Kill();
-            }
-            //Парсинг настроек алкобира
-            XElement config = XDocument.Load("AlcoBear.exe.config").Root;
-            XElement appSettingsNode = config.Element("applicationSettings").Element("AlcoBear.Properties.Settings");
-            foreach (XElement elem in appSettingsNode.Elements("setting"))
-            {
-                try
+                Process[] alcobearsProcs = Process.GetProcessesByName("AlcoBear");
+                foreach (Process proc in alcobearsProcs)
                 {
-                    if (elem.Attribute("name").Value.Equals("logFilePath") || elem.Attribute("name").Value.Equals("dbFilePath"))
+                    proc.Kill();
+                }
+            }
+            catch { }
+            Console.WriteLine("Основной процесс завершен.");
+            //Парсинг настроек алкобира
+            if (File.Exists("AlcoBear.exe.config"))
+            {
+                XElement config = XDocument.Load("AlcoBear.exe.config").Root;
+                XElement appSettingsNode = config.Element("applicationSettings").Element("AlcoBear.Properties.Settings");
+                foreach (XElement elem in appSettingsNode.Elements("setting"))
+                {
+                    try
                     {
-                        filesToDelete.Add(elem.Element("value").Value);
+                        if (elem.Attribute("name").Value.Equals("logFilePath") || elem.Attribute("name").Value.Equals("dbFilePath"))
+                        {
+                            filesToDelete.Add(elem.Element("value").Value);
+                        }
+                    }
+                    catch
+                    {
+                        continue;
                     }
                 }
-                catch 
-                {
-                    continue;
-                }
             }
+            Console.WriteLine("Настройки программы загружены");
             //Download new files
             try
             {
@@ -73,7 +82,9 @@ namespace AlcoBearUpdater
                 {
                     foreach (string new_file in updateFiles)
                     {
+                        File.Delete("new_" + new_file);
                         updateProcess.DownloadFile(UpdateConnectionString + new_file, "new_" + new_file);
+                        Console.WriteLine("Файл \""+new_file+"\" успешно загружен");
                     }
                 }
             }
@@ -94,17 +105,19 @@ namespace AlcoBearUpdater
             foreach (string old_file in updateFiles)
             {
                 File.Delete(old_file);
+                Console.WriteLine("Файл \"" + old_file + "\" удален");
             }
-            if (args[0].Equals("--all"))
-              foreach(string files in filesToDelete)
-              {
-                  File.Delete(files);
-              }
+            foreach(string files in filesToDelete)
+            {
+                File.Delete(files);
+                Console.WriteLine("Файл \"" + files + "\" удален");
+            }
 
             //Rename new files
             foreach (string files in updateFiles)
             {
                 File.Move("new_"+files, files);
+                Console.WriteLine("Файл \"" + files + "\" переименован");
             }
             Console.WriteLine("Обновление прошло успешно.");
         }
