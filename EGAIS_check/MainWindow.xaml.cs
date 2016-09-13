@@ -100,7 +100,8 @@ namespace AlcoBear
                                                 waybill.WBRegId,
                                                 Utils.reject_note
                                                ),
-                                  Utils.URLs.outcomeWayBillAct
+                                  Utils.URLs.outcomeWayBillAct,
+                                  Utils.DocumentTypes.WayBillAct.ToString()
                                  )
                    )
                 {

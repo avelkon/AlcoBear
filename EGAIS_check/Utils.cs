@@ -17,7 +17,7 @@ namespace AlcoBear
         /// </summary>
         public enum MessageType : int { MSG, ERROR, WARRING };        
 
-        public enum DocumentTypes { WBInvoiceFromMe, WBReturnFromMe, WBInvoiceToMe, WBReturnToMe, ActWriteOff, ActWriteOffShop, ActChargeOn };
+        public enum DocumentTypes { WBInvoiceFromMe, WBReturnFromMe, WBInvoiceToMe, WBReturnToMe, ActWriteOff, ActWriteOffShop, ActChargeOn, QueryRests, QueryPartner, WayBillAct};
 
         private const string UpdateInfo_login = @"egais_check";
 
@@ -130,30 +130,30 @@ namespace AlcoBear
         /// Отправляет XML-файл в ЕГАИС
         /// </summary>
         /// <param name="fileContent">содержимое XML файла</param>
-        /// <param name="url">url на который посылается запрос, по умолчанию это "/opt/in/WayBillAct"</param>
+        /// <param name="url">url на который посылается запрос</param>
         /// <returns>TRUE, если запрос успешно отправлен, иначе FALSE</returns>
-        public static bool SendXML(string fileContent, string url = null)
+        public static bool SendXML(string fileContent, string url, string documentType)
         {
-            return SendXmlGetResponse(fileContent.Trim(), url) == null ? false : true;
+            return SendXmlGetResponse(fileContent.Trim(), url, documentType) == null ? false : true;
         }
 
         /// <summary>
         /// Отправляет XML-файл в ЕГАИС
         /// </summary>
         /// <param name="fileContent">содержимое XML файла</param>
-        /// <param name="url">url на который посылается запрос, по умолчанию это "/opt/in/WayBillAct"</param>
+        /// <param name="url">url на который посылается запрос</param>
         /// <returns>Возвращает поток с ответом от сервера</returns>
-        public static string SendXmlGetResponse(string fileContent, string url = null)
+        public static string SendXmlGetResponse(string fileContent, string url, string documentType)
         {
             try
             {
                 if (!Directory.Exists("Upload")) Directory.CreateDirectory("Upload");
-                string xmlName = DateTime.Now.ToString("yyyy-MM-dd_hh-mm-ss");
+                string xmlName = documentType + "_" + DateTime.Now.ToString("yyyy-MM-dd_hh-mm-ss");
                 File.WriteAllText("Upload\\" + xmlName + ".xml", fileContent);
                 System.Net.ServicePointManager.Expect100Continue = false;
                 string boundary = "xxxxxxxxxxxxxxxxxxxxxxx" + DateTime.Now.Ticks.ToString("x");
                 byte[] boundarybytes = Encoding.ASCII.GetBytes("\r\n--" + boundary + "\r\n");
-                HttpWebRequest wr = (HttpWebRequest)WebRequest.Create(String.IsNullOrWhiteSpace(url) ? URLs.outcomeWayBillAct : url);
+                HttpWebRequest wr = (HttpWebRequest)WebRequest.Create(url);
                 wr.Method = "POST";
                 wr.ContentType = "multipart/form-data; boundary=" + boundary;
                 wr.Date = DateTime.Now;
@@ -398,7 +398,7 @@ namespace AlcoBear
             /// <returns>TRUE если запрос успешно отправлен в УТМ, иначе FALSE</returns>
             public static bool Rests()
             {
-                string resp = Utils.SendXmlGetResponse(String.Format(Properties.Resources.XMLPattern_QueryRests, Properties.Settings.Default.FSRAR_ID), Utils.URLs.restsQuery);
+                string resp = Utils.SendXmlGetResponse(String.Format(Properties.Resources.XMLPattern_QueryRests, Properties.Settings.Default.FSRAR_ID), Utils.URLs.restsQuery, Utils.DocumentTypes.QueryRests.ToString());
                 try
                 {
                     XDocument RestsQueryResponse = XDocument.Parse(resp);
@@ -429,7 +429,7 @@ namespace AlcoBear
                 try
                 {
                     string paramName = useINN ? "ИНН" : "СИО";
-                    return Utils.SendXML(String.Format(Properties.Resources.XMLPattern_QueryPartner, Properties.Settings.Default.FSRAR_ID, paramName, value), Utils.URLs.QuerryPartner);
+                    return Utils.SendXML(String.Format(Properties.Resources.XMLPattern_QueryPartner, Properties.Settings.Default.FSRAR_ID, paramName, value), Utils.URLs.QuerryPartner, Utils.DocumentTypes.QueryPartner.ToString());
                 }
                 catch (NullReferenceException)
                 {
@@ -479,7 +479,7 @@ namespace AlcoBear
                     position.AddToXML_ActWriteOf(contentNode.Element(awr + "Position"), ident++);
                 }
             }
-            return SendXML(actWriteOff.ToString(), URLs.ActWriteOff);
+            return SendXML(actWriteOff.ToString(), URLs.ActWriteOff, Utils.DocumentTypes.ActWriteOff.ToString());
         }
 
         public static bool SendActWriteOffShop(IEnumerable<StockPosition> positionsList, string writeOffReason)
@@ -533,7 +533,7 @@ namespace AlcoBear
                 }
                 
             }
-            return SendXML(waybill.ToString(), URLs.OutcomeWayBill);
+            return SendXML(waybill.ToString(), URLs.OutcomeWayBill, Utils.DocumentTypes.WBInvoiceFromMe.ToString());
         }
 
         /// <summary>
