@@ -12,6 +12,7 @@ namespace AlcoBear
     {
         //<body>
 
+        private static readonly string CName_ApplicationSettings = "C_AppSettings";
         private static readonly string CName_Contractors = "C_Contractors";
         
         private static Contractor thisCompany = null;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Net;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
@@ -22,13 +23,13 @@ namespace AlcoBear
             //Проверка новой версии
             try
             {
-                if (Utils.CheckUpdate())
+                int updateLevel = Utils.CheckUpdate();
+                if (updateLevel > 0)
                 {
                     if (MessageBox.Show("Необходимо обновить программу\nСделать это сейчас?", "Обновление", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) == MessageBoxResult.Yes) 
                     {
                         //Обновляем
-                        Utils.StartUpdate();
-                        
+                        Utils.StartUpdate(updateLevel);
                         this.Close();
                     }
                     else
@@ -183,13 +184,13 @@ namespace AlcoBear
 
         private void mainWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            Utils.GetFSRAR();
             if (String.IsNullOrWhiteSpace(Properties.Settings.Default.FSRAR_ID))
             {
                 Window settings_window = new SettingsWindow();
                 settings_window.Owner = this;
                 settings_window.ShowDialog();
             }
-            Utils.BuildURL();
         }
 
         private void btCreateNewDocument_Click(object sender, RoutedEventArgs e)

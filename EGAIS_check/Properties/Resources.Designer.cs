@@ -162,22 +162,44 @@ namespace AlcoBear.Properties {
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
-        ///&lt;ns:Documents Version=&quot;1.0&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:ns=&quot;http://fsrar.ru/WEGAIS/WB_DOC_SINGLE_01&quot; xmlns:pref=&quot;http://fsrar.ru/WEGAIS/ProductRef&quot; xmlns:awr=&quot;http://fsrar.ru/WEGAIS/ActWriteOff&quot;&gt;
+        ///&lt;ns:Documents Version=&quot;1.0&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:ns=&quot;http://fsrar.ru/WEGAIS/WB_DOC_SINGLE_01&quot; xmlns:pref=&quot;http://fsrar.ru/WEGAIS/ProductRef_v2&quot; xmlns:awr=&quot;http://fsrar.ru/WEGAIS/ActWriteOff_v2&quot; xmlns:ce=&quot;http://fsrar.ru/WEGAIS/CommonEnum&quot;&gt;
         ///	&lt;ns:Owner&gt;
         ///		&lt;ns:FSRAR_ID&gt;{0}&lt;/ns:FSRAR_ID&gt;
         ///	&lt;/ns:Owner&gt;
         ///	&lt;ns:Document&gt;
-        ///		&lt;ns:ActWriteOff&gt;
+        ///		&lt;ns:ActWriteOff_v2&gt;
         ///			&lt;awr:Header&gt;
         ///				&lt;awr:ActNumber&gt;{1}&lt;/awr:ActNumber&gt;
         ///				&lt;awr:ActDate&gt;{2}&lt;/awr:ActDate&gt;
-        ///				&lt;awr:TypeWriteOff&gt;{3}&lt;/awr:TypeWriteOff&gt;
-        ///			&lt;/awr:Header&gt;
-        /// [остаток строки не уместился]&quot;;.
+        ///				&lt;awr [остаток строки не уместился]&quot;;.
         /// </summary>
         public static string XMLPattern_ActWriteOff {
             get {
                 return ResourceManager.GetString("XMLPattern_ActWriteOff", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+        ///&lt;ns:Documents Version=&quot;1.0&quot;	xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:ns=&quot;http://fsrar.ru/WEGAIS/WB_DOC_SINGLE_01&quot; xmlns:qp=&quot;http://fsrar.ru/WEGAIS/QueryParameters&quot;&gt;
+        ///	&lt;ns:Owner&gt;
+        ///		&lt;ns:FSRAR_ID&gt;{0}&lt;/ns:FSRAR_ID&gt;
+        ///	&lt;/ns:Owner&gt;
+        ///	&lt;ns:Document&gt;
+        ///		&lt;ns:QueryNATTN&gt;
+        ///			&lt;qp:Parameters&gt;
+        ///				&lt;qp:Parameter&gt;
+        ///					&lt;qp:Name&gt;КОД&lt;/qp:Name&gt;
+        ///					&lt;qp:Value&gt;{0}&lt;/qp:Value&gt;
+        ///				&lt;/qp:Parameter&gt;
+        ///			&lt;/qp:Parameters&gt;
+        ///		&lt;/ns:QueryNATTN&gt;
+        ///	&lt;/ns:Document&gt;
+        ///&lt;/ns:Documents&gt;.
+        /// </summary>
+        public static string XmlPattern_QueryNATTN {
+            get {
+                return ResourceManager.GetString("XmlPattern_QueryNATTN", resourceCulture);
             }
         }
         

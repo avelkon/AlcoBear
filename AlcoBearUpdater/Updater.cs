@@ -14,7 +14,7 @@ namespace AlcoBearUpdater
     public class Updater
     {
         const string updateServerLogin = @"egais_check";
-        const string updateServerPassword = @"Cktgnjy";
+        const string updateServerPassword = @"3a4GLZ3So9";
         const string updateConnectionStringPattern = @"ftp://{0}:{1}@ftp.sibatom.com/AlcoBear/";
         const string UpdateLogFile = "update.log";
 

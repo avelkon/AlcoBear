@@ -168,4 +168,8 @@
     <value>..\Resources\XmlPatternActWriteOff.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
     <comment>XML-шаблон акта списания</comment>
   </data>
+  <data name="XmlPattern_QueryNATTN" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\XmlPatternQueryNATTN.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <comment>XML-шаблон запроса необработанных накладных</comment>
+  </data>
 </root>

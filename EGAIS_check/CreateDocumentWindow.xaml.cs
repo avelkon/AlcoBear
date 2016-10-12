@@ -23,6 +23,8 @@ namespace AlcoBear
             cbInfoComboBox.Visibility = System.Windows.Visibility.Hidden;
             cbInfoComboBox.Items.Clear();
             dgReturn_columnPrice.Visibility = System.Windows.Visibility.Hidden;
+            cbRestAlligment.IsChecked = false;
+            cbRestAlligment.Visibility = System.Windows.Visibility.Hidden;
             Utils.DownloadDocuments(parseWayBills: false, parseRests: true, parseParthers: true);
         }
 
@@ -63,9 +65,9 @@ namespace AlcoBear
             if(((DataGrid)sender).Equals(this.dgRestsPos)) { source = Utils.restsList; dest = this.posToReturn; }
             else if(((DataGrid)sender).Equals(this.dgReturnPos)) 
             {
-                if (MessageBox.Show("Удалить позицию из возвратной накладной?", "Правка возвратной накладной", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes) return;
+                if (MessageBox.Show("Удалить позицию из списка?", "Правка списка позиций", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes) return;
                 source = this.posToReturn; 
-                dest = Utils.restsList; 
+                dest = Utils.restsList;
             }
             if(source == null || dest == null) return;
             StockPosition positionToAdd = ((DataGrid)sender).SelectedItem as StockPosition;
@@ -92,21 +94,44 @@ namespace AlcoBear
                 if (docType == Utils.DocumentTypes.ActWriteOff)
                 {
                     if (cbInfoComboBox.SelectedIndex == -1) throw new NullReferenceException("Не указанна причина списания товара");
-                    if (dgReturnPos.Items.Count < 1 || !dgReturnPos.IsEnabled) throw new NullReferenceException("Не указанна причина списания товара");
-
-                    if (Utils.SendActWriteOff(dgReturnPos.ItemsSource as IEnumerable<StockPosition>, cbInfoComboBox.SelectedItem.ToString()))
+                    if (dgReturnPos.Items.Count < 1 || !dgReturnPos.IsEnabled) throw new NullReferenceException("Не указанны позиции для списания");
+                    //Если отмечено выравнивание остатков
+                    if (cbRestAlligment.IsChecked.HasValue && cbRestAlligment.IsChecked.Value)
                     {
-                        tbStatusMessage.Text = "Акт списания успешно отправлен в УТМ";
+                        //Добавляем не выбранные позиции
+                        List<StockPosition> posToWriteOff = new List<StockPosition>(Utils.restsList);
+                        foreach (StockPosition p in posToWriteOff) p.QuantityToReturn = p.Quantity;
+                        //Добавляем оставшееся количество выбранных бутылок
+                        List<StockPosition> posToSave = new List<StockPosition>(posToReturn);
+                        foreach(StockPosition p in posToSave) 
+                        {
+                            if (p.QuantityToReturn < p.Quantity)
+                            {
+                                p.QuantityToReturn = p.Quantity - p.QuantityToReturn;
+                                posToWriteOff.Add(p);
+                            }
+                        }
+                        //----------------
+                        if (Utils.SendActWriteOff(posToWriteOff, cbInfoComboBox.SelectedItem.ToString()))
+                        {
+                            tbStatusMessage.Text = "Акт списания успешно отправлен в УТМ";
+                        }
+                        else
+                        {
+                            throw new Exception("Ошибка при формировании акта списания");
+                        }
                     }
-                    else
+                    else if (cbRestAlligment.IsChecked.HasValue && !cbRestAlligment.IsChecked.Value)
                     {
-                        throw new Exception("Ошибка при формировании акта списания");
+                        if (Utils.SendActWriteOff(dgReturnPos.ItemsSource as IEnumerable<StockPosition>, cbInfoComboBox.SelectedItem.ToString()))
+                        {
+                            tbStatusMessage.Text = "Акт списания успешно отправлен в УТМ";
+                        }
+                        else
+                        {
+                            throw new Exception("Ошибка при формировании акта списания");
+                        }
                     }
-                }
-                //Создание нового акта постановки на баланс
-                else if(docType == Utils.DocumentTypes.ActChargeOn)
-                {
-                    throw new NotSupportedException();
                 }
                 //Создание новой ТТН
                 else if (docType == Utils.DocumentTypes.WBInvoiceFromMe || docType == Utils.DocumentTypes.WBReturnFromMe)
@@ -151,8 +176,6 @@ namespace AlcoBear
             cbItem_Return.Tag = Utils.DocumentTypes.WBReturnFromMe;
             cbItem_TTN.Tag = Utils.DocumentTypes.WBInvoiceFromMe;
             cbItem_ActWriteOff.Tag = Utils.DocumentTypes.ActWriteOff;
-            cbItem_ActWriteOffShop.Tag = Utils.DocumentTypes.ActWriteOffShop;
-            cbItem_ActChargeOn.Tag = Utils.DocumentTypes.ActChargeOn;
         }
 
         private void LoadOrgList(ComboBox comboBox, Label label)
@@ -185,6 +208,7 @@ namespace AlcoBear
                 lbInfoLabel.Visibility = System.Windows.Visibility.Hidden;
                 cbInfoComboBox.Visibility = System.Windows.Visibility.Hidden;
                 dgReturn_columnPrice.Visibility = System.Windows.Visibility.Hidden;
+                cbRestAlligment.Visibility = System.Windows.Visibility.Hidden;
             }
             else
             {
@@ -193,11 +217,13 @@ namespace AlcoBear
                 {
                     //Если выбраны ТТН
                     LoadOrgList(cbInfoComboBox, lbInfoLabel);
+                    cbRestAlligment.Visibility = System.Windows.Visibility.Hidden;
                 }
-                else if (selectedType == Utils.DocumentTypes.ActWriteOff || selectedType == Utils.DocumentTypes.ActWriteOffShop || selectedType == Utils.DocumentTypes.ActChargeOn)
+                else if (selectedType == Utils.DocumentTypes.ActWriteOff || selectedType == Utils.DocumentTypes.ActWriteOffShop)
                 {
                     //Если выбран акт списания или акт постановки на учет
                     LoadWriteOffReasons(cbInfoComboBox, lbInfoLabel);
+                    cbRestAlligment.Visibility = System.Windows.Visibility.Visible;
                 }
             }
         }

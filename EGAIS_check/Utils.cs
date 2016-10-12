@@ -17,50 +17,80 @@ namespace AlcoBear
         /// </summary>
         public enum MessageType : int { MSG, ERROR, WARRING };        
 
-        public enum DocumentTypes { WBInvoiceFromMe, WBReturnFromMe, WBInvoiceToMe, WBReturnToMe, ActWriteOff, ActWriteOffShop, ActChargeOn, QueryRests, QueryPartner, WayBillAct};
+        /// <summary>
+        /// Типы документов
+        /// </summary>
+        public enum DocumentTypes { WBInvoiceFromMe, WBReturnFromMe, WBInvoiceToMe, WBReturnToMe, ActWriteOff, ActWriteOffShop, QueryRests, QueryPartner, WayBillAct};
 
+        /// <summary>
+        /// Логин для ftp-сервера обновлений
+        /// </summary>
         private const string UpdateInfo_login = @"egais_check";
 
-        private const string UpdateInfo_password = @"Cktgnjy";
+        /// <summary>
+        /// Пароль для ftp-сервера обновлений
+        /// </summary>
+        private const string UpdateInfo_password = @"3a4GLZ3So9";
 
         public static class URLs
         {
             /// <summary>
+            /// адрес УТМ
+            /// </summary>
+            public static string UTM { get { return BuildFullURL(); } }
+
+            /// <summary>
             /// URL списка входящих документов
             /// (default: /opt/out)
             /// </summary>
-            public static string incomeDocuments = BuildURL("opt/out");
+            public static string incomeDocuments { get { return BuildFullURL("opt/out"); } }
 
             /// <summary>
             /// URL, на который отправляются акты подтверждения ТТН
             /// (default: /opt/in/WayBillAct)
             /// </summary>
-            public static string outcomeWayBillAct = BuildURL("opt/in/WayBillAct");
+            public static string outcomeWayBillAct { get { return BuildFullURL("opt/in/WayBillAct"); } }
 
             /// <summary>
             /// URL, на который отправляются запросы остатков
             /// (default: /opt/in/QueryRests)
             /// </summary>
-            public static string restsQuery = BuildURL("opt/in/QueryRests");
+            public static string restsQuery { get { return BuildFullURL("opt/in/QueryRests"); } }
 
             /// <summary>
             /// URL, на который отправляются запросы справочника организаций
             /// (default: /opt/in/QueryPartner)
             /// </summary>
-            public static string QuerryPartner = BuildURL("opt/in/QueryPartner");
+            public static string QuerryPartner { get { return BuildFullURL("opt/in/QueryPartner"); } }
 
             /// <summary>
             /// URL, на который отправляются ТТН
             /// (default: /opt/in/WayBill)
             /// </summary>
-            public static string OutcomeWayBill = BuildURL("opt/in/WayBill");
+            public static string OutcomeWayBill { get { return BuildFullURL("opt/in/WayBill"); } }
 
 
             /// <summary>
             /// URL, на который отправляются акты списания
             /// (default: /opt/in/ActWriteOff)
             /// </summary>
-            public static string ActWriteOff = BuildURL("opt/in/ActWriteOff_v2");
+            public static string ActWriteOff { get { return BuildFullURL("opt/in/ActWriteOff_v2"); } }
+
+            /// <summary>
+            /// Формирует URL из текущих настроек ЕГАИС
+            /// </summary>
+            /// <param name="path">дополнительный путь</param>
+            /// <returns>сформированный URL</returns>
+            private static string BuildFullURL(string path = "")
+            {
+                UriBuilder urb = new UriBuilder()
+                {
+                    Host = Properties.Settings.Default.UTM_host,
+                    Port = Properties.Settings.Default.UTM_port,
+                    Path = path
+                };
+                return urb.ToString();
+            }
         }
 
         /// <summary>
@@ -72,6 +102,34 @@ namespace AlcoBear
         /// Дата отказа от накладной
         /// </summary>
         public static DateTime reject_date;
+
+        /// <summary>
+        /// Пытается распарсить HTML УТМ'а и достать ФСРАР ID
+        /// </summary>
+        /// <returns>TRUE если ФСРАР ID найден, иначе FALSE</returns>
+        public static bool GetFSRAR()
+        {
+            try
+            {
+                using (WebClient wc = new WebClient())
+                {
+                    string utm_html = wc.DownloadString(URLs.UTM);
+                    Properties.Settings.Default.FSRAR_ID = utm_html.Substring(utm_html.IndexOf("PKI: FSRAR-RSA-") + "PKI: FSRAR-RSA-".Length, 12).Trim();
+                    Properties.Settings.Default.Save();
+                }
+                return true;
+            }
+            catch (WebException) 
+            {
+                Utils.WriteLog("Ошибка при подключении к УТМ", MessageType.ERROR);
+                return false;
+            }
+            catch
+            {
+                Utils.WriteLog("Ошибка при парсинге ФСРАР ID", MessageType.ERROR);
+                return false;
+            }
+        }
 
         /// <summary>
         /// Список загруженных ТТН
@@ -87,33 +145,7 @@ namespace AlcoBear
         /// Остатки продукции на складе (ЕГАИС)
         /// </summary>
         public static ObservableCollection<StockPosition> restsList = new ObservableCollection<StockPosition>();
-
-        /// <summary>
-        /// Формирует URL из текущих настроек ЕГАИС
-        /// </summary>
-        public static void BuildURL()
-        {
-            URLs.incomeDocuments = BuildURL("opt/out");
-            URLs.restsQuery = BuildURL("opt/in/QueryRests");
-            URLs.outcomeWayBillAct = BuildURL("opt/in/WayBillAct");
-        }
-
-        /// <summary>
-        /// Формирует URL из текущих настроек ЕГАИС
-        /// </summary>
-        /// <param name="path">дополнительный путь</param>
-        /// <returns>сформированный URL</returns>
-        private static string BuildURL(string path)
-        {
-            UriBuilder urb = new UriBuilder()
-            {
-                Host = Properties.Settings.Default.UTM_host,
-                Port = Properties.Settings.Default.UTM_port,
-                Path = path
-            };
-            return urb.ToString();
-        }
-
+        
         /// <summary>
         /// Пишет сообщение в log-файл
         /// </summary>
@@ -469,7 +501,7 @@ namespace AlcoBear
                 ));
             XNamespace ns = actWriteOff.Root.GetNamespaceOfPrefix("ns");
             XNamespace awr = actWriteOff.Root.GetNamespaceOfPrefix("awr");
-            XElement contentNode = actWriteOff.Root.Element(ns + "Document").Element(ns + "ActWriteOff").Element(awr + "Content");
+            XElement contentNode = actWriteOff.Root.Element(ns + "Document").Element(ns + "ActWriteOff_v2").Element(awr + "Content");
             int ident = 1;
             foreach (StockPosition position in positionsList)
             {
@@ -540,7 +572,7 @@ namespace AlcoBear
         /// Проверяет обновление и обновляется до последней версии
         /// </summary>
         /// <returns>TRUE - если требуется обновление, FALSE - если нет</returns>
-        public static bool CheckUpdate()
+        public static int CheckUpdate()
         {
             Version last_version = null;
             Version current_version = Assembly.GetExecutingAssembly().GetName().Version;
@@ -556,11 +588,16 @@ namespace AlcoBear
             }
 
             //Парсинг параметров обновления
+            int updateLevel = 1;
             foreach (string s in updateFileContent)
                 if (!String.IsNullOrWhiteSpace(s))
                 {
                     string[] setting = s.Trim().Split('=');
-                    if (setting[0].Equals("[update]", StringComparison.CurrentCultureIgnoreCase) && !(setting[1].Equals("1") || setting[1].ToLower().Equals("on"))) return false;
+                    if (setting[0].Equals("[full_update]", StringComparison.CurrentCultureIgnoreCase))
+                    {
+                        if (setting[1].Equals("1") || setting[1].Equals("yes", StringComparison.CurrentCultureIgnoreCase)) updateLevel = 2;
+                    }
+                    if (setting[0].Equals("[update]", StringComparison.CurrentCultureIgnoreCase) && !(setting[1].Equals("1") || setting[1].Equals("on", StringComparison.CurrentCultureIgnoreCase))) return 0;
                     if (setting[0].Equals("[last_version]", StringComparison.CurrentCultureIgnoreCase)) 
                     {
                         try
@@ -569,25 +606,26 @@ namespace AlcoBear
                         }
                         catch (FormatException)
                         {
-                            return false;
+                            return 0;
                         }
                     }
                 }
             //----------------------------
-            if (current_version.CompareTo(last_version) < 0) return true;
-            else return false;
+            if (current_version.CompareTo(last_version) < 0) return updateLevel;
+            else return 0;
         }
 
         /// <summary>
         /// Запускает процесс обновления
         /// </summary>
-        public static void StartUpdate()
+        public static void StartUpdate(int updateLevel = 1)
         {
             System.Diagnostics.Process updater = new System.Diagnostics.Process()
             {
                 StartInfo = new System.Diagnostics.ProcessStartInfo()
                 {
                     FileName = "AlcoBearUpdater.exe",
+                    Arguments = updateLevel == 2 ? "--delete-all" : "",
                     UseShellExecute = true
                 }
             };

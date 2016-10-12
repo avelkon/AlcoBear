@@ -50,11 +50,7 @@ namespace AlcoBear
                 this.tbOrgINN.Clear();
                 this.tbOrgKPP.Clear();
                 DataBaseEntry.ThisCompany = null;
-                Properties.Settings.Default.UTM_host = "localhost";
-                Properties.Settings.Default.UTM_port = 8080;
-                Properties.Settings.Default.FSRAR_ID = "";
-                Properties.Settings.Default.Save();
-                Utils.BuildURL();
+                Properties.Settings.Default.Reset();
                 if (MessageBox.Show("Очистить справочник контрагентов?", "Сброс настроек", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No).Equals(MessageBoxResult.Yes))
                 {
                     DataBaseEntry.DeleteContragents();
@@ -64,12 +60,10 @@ namespace AlcoBear
 
         private void btSave_Click(object sender, RoutedEventArgs e)
         {
-            Properties.Settings.Default.FSRAR_ID = tbFSRAR_ID.Text;
             UriBuilder utm_uri = new UriBuilder(tbUTMUrl.Text);
             Properties.Settings.Default.UTM_host = utm_uri.Host;
             Properties.Settings.Default.UTM_port = utm_uri.Port == 80 ? 8080 : utm_uri.Port;
             Properties.Settings.Default.Save();
-            Utils.BuildURL();
             this.Close();
         }
 
@@ -77,6 +71,11 @@ namespace AlcoBear
         {
             if (!String.IsNullOrWhiteSpace(this.tbFSRAR_ID.Text)) Utils.Requests.Contragent(this.tbFSRAR_ID.Text);
             else if (!String.IsNullOrWhiteSpace(Properties.Settings.Default.FSRAR_ID)) Utils.Requests.Contragent(Properties.Settings.Default.FSRAR_ID);
+        }
+
+        private void settingsWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            Utils.GetFSRAR();
         }
     }
 }
