@@ -8,6 +8,9 @@ namespace AlcoBear
     /// </summary>
     public partial class SettingsWindow : Window
     {
+        private readonly System.Windows.Media.Brush color_TextBoxBadValue = System.Windows.Media.Brushes.LightCoral;
+        private readonly System.Windows.Media.Brush color_TextBoxGoodValue = System.Windows.Media.Brushes.LightGreen;
+
         public SettingsWindow()
         {
             InitializeComponent();
@@ -16,6 +19,7 @@ namespace AlcoBear
         private void loadSettings()
         {
             this.tbFSRAR_ID.Text = Properties.Settings.Default.FSRAR_ID;
+            if (String.IsNullOrWhiteSpace(tbFSRAR_ID.Text)) tbFSRAR_ID.Background = color_TextBoxBadValue;
             this.tbUTMUrl.Text = Properties.Settings.Default.UTM_host;
             if (DataBaseEntry.ThisCompany != null)
             {
@@ -65,7 +69,17 @@ namespace AlcoBear
             Properties.Settings.Default.UTM_port = utm_uri.Port == 80 ? 8080 : utm_uri.Port;
             if (!Properties.Settings.Default.UTM_hosts_list.Contains(utm_uri.Host)) Properties.Settings.Default.UTM_hosts_list.Add(utm_uri.Host);
             Properties.Settings.Default.Save();
-            this.Close();
+            if (!Utils.GetFSRAR())
+            {
+                MessageBox.Show("Не удалось подключиться к УТМ", "Подключение к УТМ", MessageBoxButton.OK, MessageBoxImage.Information);
+                tbFSRAR_ID.Clear();
+                tbFSRAR_ID.Background = color_TextBoxBadValue;
+            }
+            else
+            {
+                tbFSRAR_ID.Text = Properties.Settings.Default.FSRAR_ID;
+                tbFSRAR_ID.Background = color_TextBoxGoodValue;
+            }
         }
 
         private void btGetOrgInfo_Click(object sender, RoutedEventArgs e)
@@ -76,7 +90,7 @@ namespace AlcoBear
 
         private void settingsWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            Utils.GetFSRAR();
+            
         }
     }
 }
