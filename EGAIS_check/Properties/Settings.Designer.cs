@@ -180,5 +180,19 @@ namespace AlcoBear.Properties {
                 return ((global::System.Collections.Specialized.StringCollection)(this["ActWriteOffReasons"]));
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsi=\"http://www.w3." +
+            "org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\r\n  <s" +
+            "tring>localhost</string>\r\n</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection UTM_hosts_list {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["UTM_hosts_list"]));
+            }
+            set {
+                this["UTM_hosts_list"] = value;
+            }
+        }
     }
 }

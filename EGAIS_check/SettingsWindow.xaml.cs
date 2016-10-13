@@ -63,6 +63,7 @@ namespace AlcoBear
             UriBuilder utm_uri = new UriBuilder(tbUTMUrl.Text);
             Properties.Settings.Default.UTM_host = utm_uri.Host;
             Properties.Settings.Default.UTM_port = utm_uri.Port == 80 ? 8080 : utm_uri.Port;
+            if (!Properties.Settings.Default.UTM_hosts_list.Contains(utm_uri.Host)) Properties.Settings.Default.UTM_hosts_list.Add(utm_uri.Host);
             Properties.Settings.Default.Save();
             this.Close();
         }

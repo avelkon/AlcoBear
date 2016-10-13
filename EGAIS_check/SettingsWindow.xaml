@@ -1,6 +1,7 @@
 ﻿<Window x:Name="settingsWindow" x:Class="AlcoBear.SettingsWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:settings="clr-namespace:AlcoBear.Properties"
         Title="Настройки" Height="250" Width="530" WindowStartupLocation="CenterOwner" ShowInTaskbar="False" Loaded="settingsWindow_Loaded" MinHeight="238" MinWidth="500" ScrollViewer.VerticalScrollBarVisibility="Disabled" ResizeMode="NoResize" WindowStyle="ToolWindow" SizeToContent="WidthAndHeight" Closing="settingsWindow_Closing">
     <Grid>
         <Grid.RowDefinitions>
@@ -10,7 +11,7 @@
         <TextBox x:Name="tbFSRAR_ID" Height="23" Margin="95,10,5,0" TextWrapping="Wrap" VerticalAlignment="Top" IsReadOnly="True"/>
         <Label Content="ФСРАР ID" HorizontalAlignment="Left" Margin="5,10,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" ScrollViewer.VerticalScrollBarVisibility="Disabled" Height="23"/>
         <Label Content="Адрес ЕГАИС" HorizontalAlignment="Left" Margin="5,38,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="tbUTMUrl" Height="23" Margin="95,38,5,0" TextWrapping="Wrap" VerticalAlignment="Top" ToolTip="Если порт не указан, то по умолчанию порт - 8080"/>
+        <ComboBox x:Name="tbUTMUrl" Height="23" Margin="95,38,5,0" VerticalAlignment="Top" ToolTip="Если порт не указан, то по умолчанию порт - 8080" ItemsSource="{Binding Source={x:Static settings:Settings.Default}, Path=UTM_hosts_list}" IsEditable="True"/>
         <Label Content="Организация" HorizontalAlignment="Left" Margin="5,67,0,0" VerticalAlignment="Top" Width="137"/>
         <TextBox x:Name="tbOrgShortName" Margin="148,67,5,0" TextWrapping="Wrap" Height="23" VerticalAlignment="Top" IsReadOnly="True"/>
         <Label Content="ИНН" HorizontalAlignment="Left" Margin="5,152,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
