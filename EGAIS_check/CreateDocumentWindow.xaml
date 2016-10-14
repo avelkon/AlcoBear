@@ -23,16 +23,7 @@
                 </DataGrid>
                 <TextBox x:Name="tbSearch" HorizontalAlignment="Left" Height="23" Margin="124,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="523" TextChanged="tbSearch_TextChanged"/>
                 <TextBlock HorizontalAlignment="Left" Margin="5,3,0,0" TextWrapping="Wrap" Text="Поиск по названию" VerticalAlignment="Top"/>
-                <ToggleButton x:Name="tbtAddAll" Content="Добавлять все" HorizontalAlignment="Right" VerticalAlignment="Top" Width="106" MaxHeight="22" MinHeight="20">
-                    <ToggleButton.Background>
-                        <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
-                            <GradientStop Color="#FFF3F3F3" Offset="0"/>
-                            <GradientStop Color="#FFEBEBEB" Offset="0.5"/>
-                            <GradientStop Color="#FFDDDDDD" Offset="0.5"/>
-                            <GradientStop Color="#FFCDCDCD" Offset="1"/>
-                        </LinearGradientBrush>
-                    </ToggleButton.Background>
-                </ToggleButton>
+                <ToggleButton x:Name="tbtAddAll" Content="Добавлять все" HorizontalAlignment="Right" VerticalAlignment="Top" Width="106" MaxHeight="22" MinHeight="20" Style="{StaticResource ToggleButtonDefaultStyle}" />
             </Grid>
         </GroupBox>
         <!-- -->
@@ -56,9 +47,12 @@
                 <Label x:Name="lbInfoLabel" Content="lbInfoLabel" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,2,360,0" ScrollViewer.VerticalScrollBarVisibility="Disabled"/>
                 <ComboBox x:Name="cbDocumentType" HorizontalAlignment="Left" Width="300" Margin="99,5,0,0" VerticalAlignment="Top" FlowDirection="LeftToRight" Loaded="cbDocumentType_Loaded" SelectionChanged="cbDocumentType_SelectionChanged" Height="22" MaxHeight="22" MinHeight="20">
                     <!-- Свойство Tag прописано в коде -->
-                    <ComboBoxItem x:Name="cbItem_TTN" Content="Товарно-транспортная накладная" /> <!-- + -->
-                    <ComboBoxItem x:Name="cbItem_Return" Content="Возвратная накладная" /> <!-- + -->
-                    <ComboBoxItem x:Name="cbItem_ActWriteOff" Content="Акт списания" /> <!-- + -->
+                    <ComboBoxItem x:Name="cbItem_TTN" Content="Товарно-транспортная накладная" />
+                    <!-- + -->
+                    <ComboBoxItem x:Name="cbItem_Return" Content="Возвратная накладная" />
+                    <!-- + -->
+                    <ComboBoxItem x:Name="cbItem_ActWriteOff" Content="Акт списания" />
+                    <!-- + -->
                 </ComboBox>
                 <Label Content="Тип документа:" FlowDirection="LeftToRight" Margin="5,2,0,0" HorizontalAlignment="Left" Width="94" Height="29" VerticalAlignment="Top" />
                 <CheckBox x:Name="cbRestAlligment" Content="Выравнивание остатков" HorizontalAlignment="Left" Margin="415,7,0,0" VerticalAlignment="Top" ToolTip="Если отмечено, то спишется все кроме выбранного"/>

@@ -180,11 +180,14 @@ namespace AlcoBear
                     DataBaseEntry.ThisCompany.INN,
                     DataBaseEntry.ThisCompany.KPP);
             }
+            else if (!String.IsNullOrWhiteSpace(Properties.Settings.Default.FSRAR_ID))
+            {
+                this.tbInfoOrg.Text = String.Format("ФСРАР ID {0}", Properties.Settings.Default.FSRAR_ID);
+            }
         }
 
         private void mainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            Utils.GetFSRAR();
             if (String.IsNullOrWhiteSpace(Properties.Settings.Default.FSRAR_ID))
             {
                 Window settings_window = new SettingsWindow();
