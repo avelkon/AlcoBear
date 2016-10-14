@@ -175,7 +175,7 @@ namespace AlcoBear
         {
             if (DataBaseEntry.ThisCompany != null && !String.IsNullOrWhiteSpace(DataBaseEntry.ThisCompany.ShortName))
             {
-                this.tbInfoOrg.Text = String.Format("{0} (ИНН {1} КПП {2})", 
+                this.tbInfoOrg.Text = String.Format("{0} (ИНН {1} КПП {2})",
                     DataBaseEntry.ThisCompany.ShortName,
                     DataBaseEntry.ThisCompany.INN,
                     DataBaseEntry.ThisCompany.KPP);

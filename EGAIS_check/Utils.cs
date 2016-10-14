@@ -5,6 +5,7 @@ using System.IO;
 using System.Net;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Xml.Linq;
 
 namespace AlcoBear
@@ -31,6 +32,19 @@ namespace AlcoBear
         /// Пароль для ftp-сервера обновлений
         /// </summary>
         private const string UpdateInfo_password = @"3a4GLZ3So9";
+
+        public static bool RestsAutoRefreshOn = false;
+
+        public static Thread RestsAutoRefresh = new Thread(new ThreadStart(() =>
+            {
+                Utils.RestsAutoRefreshOn = true;
+                while (RestsAutoRefreshOn)
+                {
+                    DownloadDocuments(false, true, false);
+                    File.AppendAllText("Threadtest.txt", "Check rests. time=" + DateTime.Now.ToShortTimeString());
+                    Thread.Sleep(12000);
+                }
+            }));
 
         public static class URLs
         {
@@ -330,6 +344,7 @@ namespace AlcoBear
                         {
                             //Пришел ответ на запрос остатков
                             Parser.RestsXML(documentUrl);
+                            Utils.RestsAutoRefreshOn = false;
                         }
                         else
                         {

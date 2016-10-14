@@ -43,6 +43,7 @@ namespace AlcoBear
         {
             tbStatusMessage.Text = "Отправка запроса в УТМ...";
             tbStatusMessage.Text = Utils.Requests.Rests() ? "Запрос отправлен в УТМ" : "Ошибка при формировании запроса";
+            Utils.RestsAutoRefresh.Start();
         }
 
         private void dgReturnPos_Loaded(object sender, RoutedEventArgs e)
