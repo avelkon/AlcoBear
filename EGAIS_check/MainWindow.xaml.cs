@@ -209,5 +209,10 @@ namespace AlcoBear
             contragents_window.Show();
         }
 
+        private void mainWindow_Closed(object sender, EventArgs e)
+        {
+            Utils.AutoLoader.Stop();
+        }
+
     }
 }

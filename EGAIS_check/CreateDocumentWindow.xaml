@@ -11,7 +11,7 @@
         <!-- Rests DataGrid -->
         <GroupBox x:Name="gbRests" Margin="5,2,5,0" Header="Остатки" Grid.Row="0">
             <Grid>
-                <DataGrid x:Name="dgRestsPos" Margin="0,28,0,0" AutoGenerateColumns="False" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" RowDetailsVisibilityMode="Collapsed" HeadersVisibility="Column" Loaded="dgRestsPos_Loaded" IsReadOnly="True" MouseDoubleClick="dgPositions_MouseDoubleClick" SelectionMode="Single" CanUserAddRows="False" CanUserDeleteRows="False" IsEnabled="False">
+                <DataGrid x:Name="dgRestsPos" Margin="0,28,0,0" AutoGenerateColumns="False" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" RowDetailsVisibilityMode="Collapsed" HeadersVisibility="Column" Loaded="dgRestsPos_Loaded" IsReadOnly="True" MouseDoubleClick="dgPositions_MouseDoubleClick" SelectionMode="Single" CanUserAddRows="False" CanUserDeleteRows="False" IsEnabled="False" Foreground="Black">
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding Quantity}" Header="Всего" IsReadOnly="True" CanUserResize="False" MaxWidth="40" MinWidth="40" Width="40"/>
                         <DataGridTextColumn Binding="{Binding FullName}" Header="Наименование" IsReadOnly="True" />
@@ -40,7 +40,7 @@
         <!-- Positions to return DataGrid -->
         <GroupBox Margin="5,2,5,0" Header="Выбранные позиции" Grid.Row="1">
             <Grid ScrollViewer.VerticalScrollBarVisibility="Disabled" Margin="2,0,-2,0">
-                <DataGrid x:Name="dgReturnPos" Margin="0,35,0,0" AutoGenerateColumns="False" RowDetailsVisibilityMode="Collapsed" AllowDrop="False" Loaded="dgReturnPos_Loaded" SelectionMode="Single" MouseDoubleClick="dgPositions_MouseDoubleClick" CanUserAddRows="False" HeadersVisibility="Column" IsEnabled="{Binding IsEnabled, ElementName=dgRestsPos}">
+                <DataGrid x:Name="dgReturnPos" Margin="0,35,0,0" AutoGenerateColumns="False" RowDetailsVisibilityMode="Collapsed" AllowDrop="False" Loaded="dgReturnPos_Loaded" SelectionMode="Single" MouseDoubleClick="dgPositions_MouseDoubleClick" CanUserAddRows="False" HeadersVisibility="Column" IsEnabled="{Binding IsEnabled, ElementName=dgRestsPos}" Foreground="Black">
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding QuantityToReturn, Mode=TwoWay}" Header="Кол-во" IsReadOnly="False" CanUserResize="False" MaxWidth="50" MinWidth="50" Width="50" />
                         <DataGridTextColumn Binding="{Binding Price, Mode=TwoWay}" Header="Цена" IsReadOnly="False" CanUserResize="False" MaxWidth="50" MinWidth="50" Width="50" x:Name="dgReturn_columnPrice"/>

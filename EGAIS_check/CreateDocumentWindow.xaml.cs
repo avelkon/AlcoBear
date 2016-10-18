@@ -43,6 +43,7 @@ namespace AlcoBear
         {
             tbStatusMessage.Text = "Отправка запроса в УТМ...";
             tbStatusMessage.Text = Utils.Requests.Rests() ? "Запрос отправлен в УТМ" : "Ошибка при формировании запроса";
+            Utils.AutoLoader.AutoLoadRests = true;
         }
 
         private void dgReturnPos_Loaded(object sender, RoutedEventArgs e)
@@ -66,7 +67,7 @@ namespace AlcoBear
             else if(((DataGrid)sender).Equals(this.dgReturnPos)) 
             {
                 if (MessageBox.Show("Удалить позицию из списка?", "Правка списка позиций", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes) return;
-                source = this.posToReturn; 
+                source = this.posToReturn;
                 dest = Utils.restsList;
             }
             if(source == null || dest == null) return;
@@ -78,6 +79,7 @@ namespace AlcoBear
         {
             this.posToReturn.Clear();
             this.tbSearch.Clear();
+            Utils.AutoLoader.Stop();
             Utils.DownloadDocuments(parseWayBills: false, parseRests: true, parseParthers: true);
             tbStatusMessage.Text = "Таблица остатков обновлена";
             dgRestsPos.IsEnabled = dgRestsPos.Items.Count > 0;

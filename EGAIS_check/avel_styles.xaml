@@ -3,7 +3,8 @@
     <Style  TargetType="{x:Type DataGridCell}">
         <Style.Triggers>
             <Trigger Property="IsSelected" Value="True">
-                <Setter Property="Background" Value="MediumSeaGreen" />
+                <Setter Property="Background" Value="LightGreen" />
+                <Setter Property="Foreground" Value="Black" />
             </Trigger>
         </Style.Triggers>
     </Style>

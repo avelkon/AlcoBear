@@ -5,6 +5,7 @@ using System.IO;
 using System.Net;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Xml.Linq;
 
 namespace AlcoBear
@@ -31,6 +32,78 @@ namespace AlcoBear
         /// Пароль для ftp-сервера обновлений
         /// </summary>
         private const string UpdateInfo_password = @"3a4GLZ3So9";
+
+        public static Mutex downloadDocumentsMutex = new Mutex();
+
+        public static class AutoLoader
+        {
+            /// <summary>
+            /// Включение или выключение авто обновления остатков из УТМ
+            /// </summary>
+            public static bool AutoLoadRests
+            {
+                get { return restsAutoLoad; }
+                set { restsAutoLoad = value; if (value) AutoLoader.Start(); }
+            }
+            private static bool restsAutoLoad = false;
+
+            /// <summary>
+            /// Включение или выключение авто обновления контрагентов из УТМ
+            /// </summary>
+            public static bool AutoLoadContragents
+            {
+                get { return contragentsAutoLoad; }
+                set { contragentsAutoLoad = value; if (value) AutoLoader.Start(); }
+            }
+            private static bool contragentsAutoLoad = false;
+
+            /// <summary>
+            /// Период обновления (мин.)
+            /// </summary>
+            public static int RefreshPeriod 
+            { 
+                get { return refreshPeriodMiliseconds / 60000; }
+                set { refreshPeriodMiliseconds = value * 60000; } 
+            }
+            private static int refreshPeriodMiliseconds = 60000;
+
+            /// <summary>
+            /// Запускает авто обновление данных из УТМ
+            /// </summary>
+            /// <param name="WayBills"></param>
+            /// <param name="Rests"></param>
+            /// <param name="Contragents"></param>
+            private static void Start()
+            {
+                if (!AutoLoadThread.IsAlive && (AutoLoadRests || AutoLoadContragents)) AutoLoadThread.Start();
+            }
+
+            /// <summary>
+            /// Останавливает авто обновление данных из УТМ
+            /// </summary>
+            public static void Stop()
+            {
+                if (AutoLoadThread.IsAlive)
+                {
+                    try
+                    {
+                        AutoLoadThread.Abort();
+                        AutoLoadThread.Join();
+                    }
+                    catch { }
+                }
+            }
+
+            private static Thread AutoLoadThread = new Thread(new ThreadStart(() =>
+            {
+                while (AutoLoadRests || AutoLoadContragents)
+                {
+                    DownloadDocuments(false, AutoLoadRests, AutoLoadContragents);
+                    Thread.Sleep(refreshPeriodMiliseconds);
+                }
+            }));
+
+        }
 
         public static class URLs
         {
@@ -272,12 +345,11 @@ namespace AlcoBear
         /// <summary>
         /// Загружает документы из списка входящих документов УТМ
         /// </summary>
-        public static void DownloadDocuments(bool parseWayBills = true, bool parseRests = true, bool parseParthers = true )
+        public static void DownloadDocuments(bool parseWayBills = true, bool parseRests = true, bool parseParthers = true)
         {
             try
             {
-                incomeWayBillsList.Clear();
-                incomeFormBList.Clear();
+                downloadDocumentsMutex.WaitOne();
                 XDocument egaisDocument = XDocument.Load(URLs.incomeDocuments);
                 List<string> docsToDel = new List<string>();
                 foreach (XElement node in egaisDocument.Root.Elements("url"))
@@ -288,6 +360,8 @@ namespace AlcoBear
                     {
                         try
                         {
+                            incomeWayBillsList.Clear();
+                            incomeFormBList.Clear();
                             Invoice invoice = new Invoice();
                             invoice.ParseXML(documentUrl);
                             if (invoice.WayBillType.Equals(Utils.DocumentTypes.WBReturnFromMe.ToString()))
@@ -330,6 +404,7 @@ namespace AlcoBear
                         {
                             //Пришел ответ на запрос остатков
                             Parser.RestsXML(documentUrl);
+                            Utils.AutoLoader.AutoLoadRests = false;
                         }
                         else
                         {
@@ -345,7 +420,7 @@ namespace AlcoBear
                     //Ticket
                     else if (documentUrl.ToLower().Contains("/ticket/"))
                     {
-                        //DeleteFile(documentUrl);
+                        
                     }
                 }
                 DeleteFile(docsToDel);
@@ -366,6 +441,10 @@ namespace AlcoBear
             catch (Exception ex)
             {
                 Utils.WriteLog(ex.Message, MessageType.ERROR);
+            }
+            finally
+            {
+                downloadDocumentsMutex.ReleaseMutex();
             }
         }
 
